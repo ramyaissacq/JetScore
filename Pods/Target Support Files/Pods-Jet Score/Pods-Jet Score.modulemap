@@ -1,0 +1,6 @@
+framework module Pods_Jet_Score {
+  umbrella header "Pods-Jet Score-umbrella.h"
+
+  export *
+  module * { export * }
+}
