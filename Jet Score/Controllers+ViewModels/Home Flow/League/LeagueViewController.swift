@@ -89,7 +89,21 @@ class LeagueViewController: UIViewController {
         secondHeaderSizes = secondHeaderSizes.map{$0+balance}
         
         viewModel.delegate = self
+        if HomeCategoryViewController.selectedSport == .soccer{
         viewModel.getLeagueDetails(id: leagueID ?? 0, subID: subLeagueID ?? 0, grpID: groupID ?? 0)
+        }
+        else{
+            viewModel.fetchBasketballLeagueDetails(id: leagueID ?? 0)
+        }
+    }
+    
+    func setupBasketballLeagueDetails(){
+        tableViewLeague.reloadData()
+        imgLogo.setImage(with: viewModel.basketballLeague?.leagueData?.first?.logo, placeholder: Utility.getPlaceHolder())
+        lblRule.text = viewModel.basketballLeague?.leagueData?.first?.ruleEn
+        if viewModel.basketballLeague?.leagueData?.first?.ruleEn?.trim().count ?? 0 == 0{
+            ruleView.isHidden = true
+        }
     }
     
     func setupDetails(){
@@ -146,6 +160,10 @@ class LeagueViewController: UIViewController {
 
 
 extension LeagueViewController:LeagueViewModelProtocol{
+    func didFinishFetchBasketballLeague() {
+        setupBasketballLeagueDetails()
+    }
+    
     
     func didFinishFetch() {
         setupDetails()
@@ -184,7 +202,12 @@ extension LeagueViewController:UICollectionViewDelegate,UICollectionViewDataSour
         if collectionView == collectionViewTypes{
         selectedType = indexPath.row
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+            if HomeCategoryViewController.selectedSport == .soccer{
         viewModel.getLeagueDetails(id: leagueID!, subID: subLeagueID!, grpID: groupID!)
+            }
+            else{
+                viewModel.fetchBasketballLeagueDetails(id: leagueID!)
+            }
             setupViews()
         }
     }

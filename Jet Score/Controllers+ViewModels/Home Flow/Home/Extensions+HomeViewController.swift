@@ -9,7 +9,14 @@ import Foundation
 import UIKit
 
 extension HomeViewController:HomeViewModelDelegate{
+    func didFinishFetchBasketballRecentMatches() {
+        prepareDisplays()
+    }
+    
     func didFinishFetchBasketballScores() {
+        leagueDropDown?.dataSource = ["All Leagues"]
+        lblLeague.text = "All Leagues"
+        viewModel.filterBasketballMatches(type: selectedType)
         prepareDisplays()
     }
     
@@ -57,7 +64,12 @@ extension HomeViewController:UICollectionViewDelegate,UICollectionViewDataSource
         return viewModel.categories.count
         }
         else{
+            if selectedSportsType == .soccer{
             return AppPreferences.getMatchHighlights().count
+            }
+            else{
+                return AppPreferences.getBasketBallHighlights().count
+            }
         }
         
     }
@@ -71,25 +83,61 @@ extension HomeViewController:UICollectionViewDelegate,UICollectionViewDataSource
         else{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HighlightsCollectionViewCell", for: indexPath) as! HighlightsCollectionViewCell
             let matches = AppPreferences.getMatchHighlights()
+            let basketMatches = AppPreferences.getBasketBallHighlights()
+            if selectedSportsType == .soccer{
             cell.configureCell(obj: matches[indexPath.row])
+            }
+            else{
+                cell.configureCell(obj: basketMatches[indexPath.row])
+            }
             cell.scoresView.callBackIndex = {
-                self.goToCategory(obj:matches[indexPath.row], category: .index)
+                if self.selectedSportsType == .soccer{
+                self.goToCategory(obj:matches[indexPath.row], basketMatch: nil, category: .index)
+                }
+                else{
+                    self.goToCategory(obj:nil, basketMatch: basketMatches[indexPath.row], category: .index)
+                    
+                }
             }
             
             cell.scoresView.callBackAnalysis = {
-                self.goToCategory(obj:matches[indexPath.row], category: .analysis)
+                if self.selectedSportsType == .soccer{
+                self.goToCategory(obj:matches[indexPath.row], basketMatch: nil, category: .analysis)
+                }
+                else{
+                    self.goToCategory(obj:nil, basketMatch: basketMatches[indexPath.row], category: .index)
+                    
+                }
                 
             }
             cell.scoresView.callBackLeague = {
-                self.goToCategory(obj:matches[indexPath.row], category: .league)
+                if self.selectedSportsType == .soccer{
+                self.goToCategory(obj:matches[indexPath.row], basketMatch: nil, category: .league)
+                }
+                else{
+                    self.goToCategory(obj:nil, basketMatch: basketMatches[indexPath.row], category: .index)
+                    
+                }
                 
             }
             cell.scoresView.callBackEvent = {
-                self.goToCategory(obj:matches[indexPath.row], category: .event)
+                if self.selectedSportsType == .soccer{
+                self.goToCategory(obj:matches[indexPath.row], basketMatch: nil, category: .event)
+                }
+                else{
+                    self.goToCategory(obj:nil, basketMatch: basketMatches[indexPath.row], category: .index)
+                    
+                }
                 
             }
             cell.scoresView.callBackBreifing = {
-                self.goToCategory(obj:matches[indexPath.row], category: .breifing)
+                if self.selectedSportsType == .soccer{
+                self.goToCategory(obj:matches[indexPath.row], basketMatch: nil, category: .breifing)
+                }
+                else{
+                    self.goToCategory(obj:nil, basketMatch: basketMatches[indexPath.row], category: .index)
+                    
+                }
                 
             }
             
@@ -103,12 +151,22 @@ extension HomeViewController:UICollectionViewDelegate,UICollectionViewDataSource
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
         if selectedTimeIndex == 0{
             selectedType = indexPath.row
+            if selectedSportsType == .soccer{
             viewModel.filterMatches(type: selectedType)
+            }
+            else{
+                viewModel.filterBasketballMatches(type: selectedType)
+            }
             prepareDisplays()
         }
         else{
             selectedDate = viewModel.categories[indexPath.row]
+            if self.selectedSportsType == .soccer{
             viewModel.getRecentMatches(date: selectedDate)
+            }
+            else{
+                viewModel.getBasketballRecentMatches(date: selectedDate)
+            }
             
         }
         }
@@ -124,7 +182,12 @@ extension HomeViewController:UICollectionViewDelegate,UICollectionViewDataSource
         }
         else{
             let w = UIScreen.main.bounds.width - 10
-            return CGSize(width: w, height: 170)
+            if selectedSportsType == .soccer{
+            return CGSize(width: w, height: 180)
+            }
+            else{
+                return CGSize(width: w, height: 263)
+            }
         }
         
     }
@@ -157,23 +220,48 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource{
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! ScoresTableViewCell
         cell.callIndexSelection = {
-            self.goToCategory(obj:self.viewModel.matches?[indexPath.row], category: .index)
+            if self.selectedSportsType == .soccer{
+            self.goToCategory(obj:self.viewModel.matches?[indexPath.row], basketMatch: nil, category: .index)
+            }
+            else{
+                self.goToCategory(obj:nil, basketMatch: self.viewModel.basketballMatches?[indexPath.row], category: .index)
+            }
         }
         
         cell.callAnalysisSelection = {
-            self.goToCategory(obj:self.viewModel.matches?[indexPath.row], category: .analysis)
+            if self.selectedSportsType == .soccer{
+            self.goToCategory(obj:self.viewModel.matches?[indexPath.row], basketMatch: nil, category: .analysis)
+            }
+            else{
+                self.goToCategory(obj:nil, basketMatch: self.viewModel.basketballMatches?[indexPath.row], category: .analysis)
+            }
         }
         
         cell.callEventSelection = {
-            self.goToCategory(obj:self.viewModel.matches?[indexPath.row], category: .event)
+            if self.selectedSportsType == .soccer{
+            self.goToCategory(obj:self.viewModel.matches?[indexPath.row], basketMatch: nil, category: .event)
+            }
+            else{
+                self.goToCategory(obj:nil, basketMatch: self.viewModel.basketballMatches?[indexPath.row], category: .event)
+            }
             
         }
         cell.callBriefingSelection = {
-            self.goToCategory(obj:self.viewModel.matches?[indexPath.row], category: .breifing)
+            if self.selectedSportsType == .soccer{
+            self.goToCategory(obj:self.viewModel.matches?[indexPath.row], basketMatch: nil, category: .breifing)
+            }
+            else{
+                self.goToCategory(obj:nil, basketMatch: self.viewModel.basketballMatches?[indexPath.row], category: .breifing)
+            }
             
         }
         cell.callLeagueSelection = {
-            self.goToCategory(obj:self.viewModel.matches?[indexPath.row], category: .league)
+            if self.selectedSportsType == .soccer{
+            self.goToCategory(obj:self.viewModel.matches?[indexPath.row], basketMatch: nil, category: .league)
+            }
+            else{
+                self.goToCategory(obj:nil, basketMatch: self.viewModel.basketballMatches?[indexPath.row], category: .league)
+            }
             
         }
         cell.callLongPress = {
@@ -191,11 +279,18 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource{
         
     }
     
-    func goToCategory(obj:MatchList?,category:HomeCategory){
+    func goToCategory(obj:MatchList?,basketMatch:BasketballMatchList?,category:HomeCategory){
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "HomeCategoryViewController") as! HomeCategoryViewController
+        if selectedSportsType == .soccer{
         HomeCategoryViewController.matchID = obj?.matchId
+        }
+        else{
+            HomeCategoryViewController.matchID = basketMatch?.matchId
+        }
         vc.selectedMatch =  obj
         vc.selectedCategory = category
+        vc.basketMatch = basketMatch
+        HomeCategoryViewController.selectedSport = selectedSportsType
         self.navigationController?.pushViewController(vc, animated: true)
         
     }
@@ -203,12 +298,28 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource{
     func showMatchOptions(row:Int){
         if longPressId == nil{
         longPressId = row
-            guard let obj = viewModel.matches?[row] else{return}
+            var obj:MatchList?
+            var basketObj:BasketballMatchList?
+            if self.selectedSportsType == .soccer{
+            obj = viewModel.matches?[row]
+            }
+            else{
+                basketObj = viewModel.basketballMatches?[row]
+            }
         Dialog.openMatchOptionsDialog {
             self.longPressId = nil
-            let matchDate = Utility.getSystemTimeZoneTime(dateString: obj.matchTime ?? "")
+            
+            var matchDate = Utility.getSystemTimeZoneTime(dateString: obj?.matchTime ?? "")
+            if self.selectedSportsType == .basketball{
+                matchDate = Utility.getSystemTimeZoneTime(dateString: basketObj?.matchTime ?? "")
+            }
             if matchDate > Date(){
-                Utility.scheduleLocalNotification(date: matchDate, subTitle: obj.leagueName ?? "", body: "Match \(obj.homeName ?? "") Vs \(obj.awayName ?? "") will start now")
+                if self.selectedSportsType == .soccer{
+                Utility.scheduleLocalNotification(date: matchDate, subTitle: obj?.leagueName ?? "", body: "Match \(obj?.homeName ?? "") Vs \(obj?.awayName ?? "") will start now")
+                }
+                else{
+                    Utility.scheduleLocalNotification(date: matchDate, subTitle: basketObj?.leagueNameEn ?? "", body: "Match \(basketObj?.homeTeamNameEn ?? "") Vs \(basketObj?.awayTeamNameEn ?? "") will start now")
+                }
             }
             else{
                 Utility.showErrorSnackView(message: "Please choose upcoming matches")
@@ -216,13 +327,27 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource{
             
         } callHighlights: {
             self.longPressId = nil
-            AppPreferences.addToHighlights(obj: obj)
-            self.collectionViewHighlights.reloadData()
+            if self.selectedSportsType == .soccer{
+                if obj != nil{
+            AppPreferences.addToHighlights(obj: obj!)
+                }
             self.pageControl.numberOfPages = AppPreferences.getMatchHighlights().count
+            }
+            else{
+                if basketObj != nil{
+                AppPreferences.addToBasketballHighlights(obj: basketObj!)
+                }
+                self.pageControl.numberOfPages = AppPreferences.getBasketBallHighlights().count
+            }
+            self.collectionViewHighlights.reloadData()
             self.highlightsStack.isHidden = false
             
         } callPin: {
             self.longPressId = nil
+//            AppPreferences.addToPinlist(obj: obj)
+//            self.setupTimerForpinRefresh()
+//            self.setupTimerForPinAlert()
+            
         } callClose: {
             self.longPressId = nil
         }

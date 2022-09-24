@@ -27,8 +27,8 @@ let name:String?
         FootballCompany.companies = companies
     }
     
-    static func getCompanyName(id:Int)->String?{
-       return companies?.filter{$0.id == id}.first?.name
+    static func getCompanyName(id:Int)->String{
+       return companies?.filter{$0.id == id}.first?.name ?? "Company"
         
     }
     

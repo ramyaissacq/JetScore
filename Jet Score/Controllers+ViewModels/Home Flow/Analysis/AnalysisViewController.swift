@@ -26,7 +26,13 @@ class AnalysisViewController: UIViewController {
         tableViewAnalysis.register(UINib(nibName: "AnalysisFooterTableViewCell", bundle: nil), forCellReuseIdentifier: "footer")
         tableViewAnalysis.register(UINib(nibName: "AnalysisOddsTableViewCell", bundle: nil), forCellReuseIdentifier: "oddCell")
         tableViewAnalysis.register(UINib(nibName: "AnalysisTableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
+        viewModel.delegate = self
         
+        if HomeCategoryViewController.selectedSport == .basketball{
+            sectionHeaders = ["Head to head","Home Team Recent Matches","Away Team Recent Matches"]
+            viewModel.fetchBasketballAnalysisData()
+        }
+        else{
         //Calculating cell widths for headings
         headerSizes = [65,36,30,30,30,30,42,33]
         let itemSpacing:CGFloat = CGFloat((headerSizes.count - 1) * 5)
@@ -34,9 +40,11 @@ class AnalysisViewController: UIViewController {
         let totalSpace:CGFloat = total_widths + itemSpacing
         let balance = (UIScreen.main.bounds.width - totalSpace)/CGFloat(headerSizes.count)
         headerSizes = headerSizes.map{$0+balance}
-        
-        viewModel.delegate = self
         viewModel.fetchAnalysisData()
+        }
+        
+        
+        
        
     }
     
@@ -44,6 +52,10 @@ class AnalysisViewController: UIViewController {
 }
 
 extension AnalysisViewController:AnalysisViewModelDelegate{
+    func didFinishBasketAnalysis() {
+        tableViewAnalysis.reloadData()
+    }
+    
     func didFinishFetch() {
         tableViewAnalysis.reloadData()
     }
@@ -59,11 +71,26 @@ extension AnalysisViewController:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section{
         case 0:
+            if HomeCategoryViewController.selectedSport == .soccer{
             return viewModel.analysisData?.headToHead?.count ?? 0
+            }
+            else{
+                return viewModel.basketAnalysis?.headToHead?.count ?? 0
+            }
         case 1:
+            if HomeCategoryViewController.selectedSport == .soccer{
             return viewModel.analysisData?.homeLastMatches?.count ?? 0
+            }
+            else{
+                return viewModel.basketAnalysis?.homeLastMatches?.count ?? 0
+            }
         case 2:
+            if HomeCategoryViewController.selectedSport == .soccer{
             return viewModel.analysisData?.awayLastMatches?.count ?? 0
+            }
+            else{
+                return viewModel.basketAnalysis?.awayLastMatches?.count ?? 0
+            }
         case 3:
             return 6
         case 4:
@@ -92,16 +119,37 @@ extension AnalysisViewController:UITableViewDelegate,UITableViewDataSource{
         else{
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! AnalysisTableViewCell
             var str = ""
+            var obj:BasketballAnalysisData?
             if indexPath.section == 0{
+                if HomeCategoryViewController.selectedSport == .soccer{
                 str = viewModel.analysisData?.headToHead?[indexPath.row].first ?? ""
+                }
+                else{
+                    obj = viewModel.basketAnalysis?.headToHead?[indexPath.row]
+                }
             }
             else if indexPath.section == 1{
+                if HomeCategoryViewController.selectedSport == .soccer{
                 str = viewModel.analysisData?.homeLastMatches?[indexPath.row].first ?? ""
+                }
+                else{
+                    obj = viewModel.basketAnalysis?.homeLastMatches?[indexPath.row]
+                }
             }
             else if indexPath.section == 2{
+                if HomeCategoryViewController.selectedSport == .soccer{
                 str = viewModel.analysisData?.awayLastMatches?[indexPath.row].first ?? ""
+                }
+                else{
+                    obj = viewModel.basketAnalysis?.awayLastMatches?[indexPath.row]
+                }
             }
+            if HomeCategoryViewController.selectedSport == .soccer{
             cell.configureCell(match: str)
+            }
+            else{
+                cell.configureCell(obj: obj)
+            }
             return cell
         }
         

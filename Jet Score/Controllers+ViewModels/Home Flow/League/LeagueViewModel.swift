@@ -10,6 +10,7 @@ import SwiftyJSON
 
 protocol LeagueViewModelProtocol{
     func didFinishFetch()
+    func didFinishFetchBasketballLeague()
 }
 class LeagueViewModel{
     var delegate:LeagueViewModelProtocol?
@@ -18,6 +19,7 @@ class LeagueViewModel{
     var normalStandings:TeamStandingsResponse?
     var leaguStanding:LeagueStanding?
     var isNormalStanding = true
+    var basketballLeague:BasketballLeagueResponse?
     
     func getLeagueDetails(id:Int,subID:Int,grpID:Int){
        // Utility.showProgress()
@@ -27,6 +29,17 @@ class LeagueViewModel{
             self.leaguDetails = LeagueResponse(json!)
             self.populateData()
             self.delegate?.didFinishFetch()
+        } failed: { _ in
+            
+        }
+
+    }
+    
+    func fetchBasketballLeagueDetails(id:Int){
+        HomeAPI().getBasketballLeagueDetails(id: id) { response in
+            self.basketballLeague = response
+            self.populateData()
+            self.delegate?.didFinishFetchBasketballLeague()
         } failed: { _ in
             
         }
@@ -50,6 +63,20 @@ class LeagueViewModel{
     func populateData(){
         var tmpArr = [League]()
         let keys = ["Full Name :","Abbreviation :","Type :","Current Sub-League :","Total Rounds :","Current Round :","Current Season :","Country :"]
+        var values = getFootballLeagueValues()
+        if HomeCategoryViewController.selectedSport == .basketball{
+          values = getBasketballLeagueValues()
+        }
+        
+        for i in 0...values.count-1{
+            let obj = League(key: keys[i], value: values[i])
+            tmpArr.append(obj)
+        }
+        leagueInfoArray = tmpArr
+        
+    }
+    
+    func getFootballLeagueValues()->[String]{
         var values = [String]()
         values.append(leaguDetails?.leagueData01?.first?.nameEn ?? "")
         values.append(leaguDetails?.leagueData01?.first?.nameEnShort ?? "")
@@ -59,13 +86,19 @@ class LeagueViewModel{
         values.append(leaguDetails?.leagueData02?.first?.currentRound ?? "")
         values.append(leaguDetails?.leagueData02?.first?.currentSeason ?? "")
         values.append(leaguDetails?.leagueData01?.first?.countryEn ?? "")
-        
-        for i in 0...values.count-1{
-            let obj = League(key: keys[i], value: values[i])
-            tmpArr.append(obj)
-        }
-        leagueInfoArray = tmpArr
-        
+        return values
+    }
+    func getBasketballLeagueValues()->[String]{
+        var values = [String]()
+        values.append(basketballLeague?.leagueData?.first?.nameEn ?? "")
+        values.append(basketballLeague?.leagueData?.first?.nameEnShort ?? "")
+        values.append("League")
+        values.append("League")
+        values.append("")
+        values.append("")
+        values.append(basketballLeague?.leagueData?.first?.currentSeason ?? "")
+        values.append(basketballLeague?.leagueData?.first?.countryEn ?? "")
+        return values
     }
     
     //Methods for handling teamstandings display

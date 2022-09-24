@@ -9,11 +9,13 @@ import Foundation
 
 protocol AnalysisViewModelDelegate{
     func didFinishFetch()
+    func didFinishBasketAnalysis()
 }
 
 class AnalysisViewModel{
     var delegate:AnalysisViewModelDelegate?
     var analysisData:ScoreAnalysis?
+    var basketAnalysis:BasketballAnalysisList?
     
     func fetchAnalysisData(){
         //Utility.showProgress()
@@ -29,6 +31,18 @@ class AnalysisViewModel{
             
         } failed: { msg in
             //Utility.showErrorSnackView(message: msg)
+        }
+
+    }
+    
+    
+    func fetchBasketballAnalysisData(){
+        HomeAPI().getBasketballAnalysis(id: HomeCategoryViewController.matchID!) { response in
+            self.basketAnalysis = response.list?.first
+            self.delegate?.didFinishBasketAnalysis()
+            
+        } failed: { _ in
+            
         }
 
     }

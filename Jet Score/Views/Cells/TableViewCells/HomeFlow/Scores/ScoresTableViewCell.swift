@@ -127,6 +127,7 @@ class ScoresTableViewCell: UITableViewCell {
         quartersStack.isHidden = true
         cornerStack.isHidden = false
         cornerView.isHidden = false
+        viewEvent.isHidden = false
         lblName.text = obj?.leagueName
         lblHomeName.text = obj?.homeName
         lblAwayName.text = obj?.awayName
@@ -207,9 +208,14 @@ class ScoresTableViewCell: UITableViewCell {
     func configureCell(obj:BasketballMatchList?){
         cornerStack.isHidden = true
         cornerView.isHidden = true
+        viewEvent.isHidden = true
+        viewIndex.isHidden = false
+        odds1Stack.isHidden = false
+        odds2Stack.isHidden = false
+        indexViewYellow.isHidden = false
         lblName.text = obj?.leagueNameEn
-        lblHomeName.text = obj?.homeTeamNameEn
-        lblAwayName.text = obj?.awayTeamNameEn
+        lblHomeName.text = obj?.homeTeamEn
+        lblAwayName.text = obj?.awayTeamEn
         if obj?.matchState == 0{
             lblScore.text = "SOON"
         }
@@ -243,7 +249,7 @@ class ScoresTableViewCell: UITableViewCell {
         }
         else{
             viewBriefing.isHidden = true
-            
+
         }
         homeScores = ["Home",obj?.home1 ?? "",obj?.home2 ?? "",obj?.home3 ?? "",obj?.home4 ?? "",obj?.homeScore ?? ""]
         awayScores = ["Away",obj?.away1 ?? "",obj?.away2 ?? "",obj?.away3 ?? "",obj?.away4 ?? "",obj?.awayScore ?? ""]

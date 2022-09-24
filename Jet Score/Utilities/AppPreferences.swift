@@ -10,6 +10,8 @@ class AppPreferences {
 //        case userData = "userData"
        // case APPLE_LANGUAGE_KEY = "AppleLanguages"
         case matchHighlights = "matchHighlights"
+        case pinList = "pinList"
+        case basketBallHighlights = "basketBallHighlights"
         
         
     }
@@ -29,6 +31,7 @@ class AppPreferences {
            
            userDefaults.set(dict, forKey: Keys.matchHighlights.rawValue)
        }
+    
    
        class func getMatchHighlights() -> [MatchList]
        {
@@ -44,6 +47,71 @@ class AppPreferences {
                    }
                    return matches
        }
+    
+    class func addToBasketballHighlights(obj:BasketballMatchList)
+       {
+           let userDefaults = UserDefaults.standard
+           var matches = getBasketBallHighlights()
+           if !matches.filter({$0.matchId == obj.matchId}).isEmpty{
+               matches.remove(at: matches.firstIndex(where: {$0.matchId == obj.matchId})!)
+           }
+           matches.append(obj)
+           var dict = [[String:Any]]()
+           for m in matches{
+               dict.append(m.toDictionary())
+           }
+           
+           userDefaults.set(dict, forKey: Keys.basketBallHighlights.rawValue)
+       }
+    
+    class func getBasketBallHighlights() -> [BasketballMatchList]
+    {
+        let userDefaults = UserDefaults.standard
+        var matches = [BasketballMatchList]()
+        if let matchData = userDefaults.object(forKey: Keys.basketBallHighlights.rawValue) as? [[String:Any]]
+                {
+            for m in matchData{
+                let match = BasketballMatchList(JSON(m))
+                matches.append(match)
+              }
+                    
+                }
+                return matches
+    }
+    
+    class func addToPinlist(obj:MatchList)
+       {
+           let userDefaults = UserDefaults.standard
+           var matches = getPinList()
+           if !matches.filter({$0.matchId == obj.matchId}).isEmpty{
+               matches.remove(at: matches.firstIndex(where: {$0.matchId == obj.matchId})!)
+           }
+           matches.append(obj)
+           var dict = [[String:Any]]()
+           for m in matches{
+               dict.append(m.toDictionary())
+           }
+           
+           userDefaults.set(dict, forKey: Keys.pinList.rawValue)
+       }
+    
+    class func getPinList() -> [MatchList]
+    {
+        let userDefaults = UserDefaults.standard
+        var matches = [MatchList]()
+        if let matchData = userDefaults.object(forKey: Keys.pinList.rawValue) as? [[String:Any]]
+                {
+            for m in matchData{
+                let match = MatchList(JSON(m))
+                matches.append(match)
+              }
+                    
+                }
+                return matches
+    }
+    
+    
+    
     
 //    class func setToken(withToken token: String)
 //    {

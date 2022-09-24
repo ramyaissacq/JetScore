@@ -74,6 +74,14 @@ class HomeAPI: WebService {
         }, failed: failed)
     }
     
+    func getMatchDetails(id:Int,completion:@escaping (ScoresResponse) -> Void, failed: @escaping (String) -> Void){
+        let url = BaseUrl.getBaseUrl() + EndPoints.matchDetails.rawValue + "/\(Utility.getCurrentLang())/\(id)"
+        get(url: url, params: [:], completion: { json in
+            let response = ScoresResponse(json!)
+            completion(response)
+        }, failed: failed)
+    }
+    
     
     //Basketball APIs
     func getBasketballScores(completion:@escaping (BasketballScoreResponse) -> Void, failed: @escaping (String) -> Void){
@@ -84,5 +92,45 @@ class HomeAPI: WebService {
         }, failed: failed)
     }
     
+    func getBasketballScoresPastFuture(date:String,completion:@escaping (BasketballScoreResponse) -> Void, failed: @escaping (String) -> Void){
+        let url = BaseUrl.getBaseUrl() + EndPoints.basketball_past_future.rawValue + "/\(date)"
+        get(url: url, params: [:], completion: { json in
+            let response = BasketballScoreResponse(json!)
+            completion(response)
+        }, failed: failed)
+    }
     
+    func getBasketballScoresByIndex(completion:@escaping (BasketballIndexResponse) -> Void, failed: @escaping (String) -> Void){
+        let url = BaseUrl.getBaseUrl() + EndPoints.basketball_index.rawValue
+        get(url: url, params: [:], completion: { json in
+            let response = BasketballIndexResponse(json!)
+            completion(response)
+        }, failed: failed)
+    }
+    
+    func getBasketballAnalysis(id:Int,completion:@escaping (BasketballAnalysisResponse) -> Void, failed: @escaping (String) -> Void){
+        let url = BaseUrl.getBaseUrl() + EndPoints.basketball_analysis.rawValue + "/\(id)"
+        get(url: url, params: [:], completion: { json in
+            let response = BasketballAnalysisResponse(json!)
+            completion(response)
+        }, failed: failed)
+    }
+    
+    func getBasketballLeagueDetails(id:Int,completion:@escaping (BasketballLeagueResponse?) -> Void, failed: @escaping (String) -> Void){
+        let url = BaseUrl.getBaseUrl() + EndPoints.basketball_league.rawValue + "/\(id)"
+        get(url: url, params: [:], completion: { json in
+            let response = BasketballLeagueResponse(json!)
+            completion(response)
+        }, failed: failed)
+    }
+    
+    func getBasketballBriefing(id:Int,completion:@escaping (BasketballBriefingDetails) -> Void, failed: @escaping (String) -> Void){
+        let url = BaseUrl.getBaseUrl() + EndPoints.basketball_briefing.rawValue + "/\(id)"
+        get(url: url, params: [:], completion: { json in
+            let response = BasketballBriefingDetails(json!)
+            completion(response)
+        }, failed: failed)
+    }
+    
+   
 }

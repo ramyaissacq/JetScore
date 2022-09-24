@@ -26,6 +26,13 @@ class HomeViewController: BaseViewController {
     @IBOutlet weak var lblHeader: UILabel!
     @IBOutlet weak var collectionViewHighlights: UICollectionView!
     @IBOutlet weak var pageControl: UIPageControl!
+    @IBOutlet weak var collectionViewHighlightsHeight: NSLayoutConstraint!
+    @IBOutlet weak var soccerView: UIView!
+    @IBOutlet weak var lblSoccer: UILabel!
+    @IBOutlet weak var imgSoccer: UIImageView!
+    @IBOutlet weak var basketView: UIView!
+    @IBOutlet weak var lblBasketBall: UILabel!
+    @IBOutlet weak var imgBasketBall: UIImageView!
     
     //MARK: - Variables
     var viewModel = HomeVieModel()
@@ -41,6 +48,9 @@ class HomeViewController: BaseViewController {
     var longPressId:Int?
     var current = 0
     var selectedSportsType = SportsType.soccer
+    var timerPinsRefresh = Timer()
+    var timerPinsAlert = Timer()
+    var isHighlights = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,8 +60,15 @@ class HomeViewController: BaseViewController {
     //IBActions
     @IBAction func actionTapSoccer(){
         selectedSportsType = SportsType.soccer
+        handleSportsSelection()
         if AppPreferences.getMatchHighlights().count > 0{
+            collectionViewHighlightsHeight.constant = 180
+            collectionViewHighlights.reloadData()
             highlightsStack.isHidden = false
+            pageControl.numberOfPages = AppPreferences.getMatchHighlights().count
+        }
+        else{
+            highlightsStack.isHidden = true
         }
         prepareDisplays()
         
@@ -59,16 +76,26 @@ class HomeViewController: BaseViewController {
     
     @IBAction func actionTapBasketball(){
         selectedSportsType = SportsType.basketball
-        highlightsStack.isHidden = true
+        handleSportsSelection()
+        if AppPreferences.getBasketBallHighlights().count > 0{
+            collectionViewHighlightsHeight.constant = 263
+            collectionViewHighlights.reloadData()
+            highlightsStack.isHidden = false
+            pageControl.numberOfPages = AppPreferences.getBasketBallHighlights().count
+        }
+        else{
+            highlightsStack.isHidden = true
+        }
         prepareDisplays()
     }
     
     
     func initialSettings(){
         
-        UNUserNotificationCenter.current().delegate = self
-        Utility.scheduleLocalNotificationNow(time: 1, title: "Hon Kong Vs Myanmar", subTitle: "", body: "Scores - 2:1, C - 3:1, HT - 1:0")
-        Utility.scheduleLocalNotificationNow(time: 5, title: "Hon Kong Vs Myanmar", subTitle: "GOAL!!", body: "Scores - 3:1, C - 3:1, HT - 1:0")
+//        Utility.scheduleLocalNotificationNow(time: 1, title: "Hon Kong Vs Myanmar", subTitle: "", body: "Scores - 2:1, C - 3:1, HT - 1:0")
+//        Utility.scheduleLocalNotificationNow(time: 5, title: "Hon Kong Vs Myanmar", subTitle: "GOAL!!", body: "Scores - 3:1, C - 3:1, HT - 1:0")
+//        setupTimerForpinRefresh()
+//        setupTimerForPinAlert()
         setupNavButtons()
         setupGestures()
         // FootballLeague.populateFootballLeagues()
@@ -80,7 +107,7 @@ class HomeViewController: BaseViewController {
         collectionViewCategory.selectItem(at: IndexPath(row: 0, section: 0), animated: true, scrollPosition: .left)
         tableView.register(UINib(nibName: "ScoresTableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
         refreshControl = UIRefreshControl()
-        refreshControl?.tintColor = .clear
+        //refreshControl?.tintColor = .clear
         refreshControl?.addTarget(self, action: #selector(refresh), for: .valueChanged)
         tableView.refreshControl = refreshControl
         
@@ -101,6 +128,36 @@ class HomeViewController: BaseViewController {
         print("Left")
     }
     
+    func handleSportsSelection(){
+        if selectedSportsType == .soccer{
+            soccerView.backgroundColor = Colors.accentColor()
+            imgSoccer.setImageColor(color: .white)
+            lblSoccer.textColor = .white
+        }
+        else if selectedSportsType == .basketball{
+            basketView.backgroundColor = Colors.accentColor()
+            imgBasketBall.setImageColor(color: .white)
+            lblBasketBall.textColor = .white
+        }
+        
+        deSelectSportViews()
+    }
+    
+    func deSelectSportViews(){
+        if selectedSportsType != .soccer{
+        soccerView.backgroundColor = Colors.fadeRedColor()
+        imgSoccer.setImageColor(color: Colors.accentColor())
+        lblSoccer.textColor = Colors.accentColor()
+        }
+        
+        if selectedSportsType != .basketball{
+            basketView.backgroundColor = Colors.fadeRedColor()
+            imgBasketBall.setImageColor(color: Colors.accentColor())
+            lblBasketBall.textColor = Colors.accentColor()
+        }
+        
+        
+    }
     
     func configureLeagueDropDown(){
         leagueDropDown = DropDown()
@@ -114,7 +171,7 @@ class HomeViewController: BaseViewController {
             lblLeague.text = item
             if index == 0{
                 selectedLeagueID = nil
-                if selectedTimeIndex == 0{
+                if selectedTimeIndex == 0 && selectedSportsType == .soccer{
                     page = 1
                     viewModel.getMatchesList(page: page)
                 }
@@ -142,12 +199,17 @@ class HomeViewController: BaseViewController {
             switch index{
             case 0:
                 viewModel.categories = viewModel.todayCategories
+                if selectedSportsType == .soccer{
                 var arr:[String] = viewModel.scoreResponse?.todayHotLeague?.map{$0.leagueName ?? ""} ?? []
                 arr.insert("All Leagues", at: 0)
                 self.leagueDropDown?.dataSource = arr
                 lblLeague.text = arr.first
                 page = 1
                 viewModel.getMatchesList(page: page)
+                }
+                else{
+                    viewModel.getBasketballScores()
+                }
             case 1:
                 viewModel.categories = viewModel.pastDates
                 leagueDropDown?.dataSource = ["All Leagues"]
@@ -199,7 +261,10 @@ class HomeViewController: BaseViewController {
     
     @objc func swipe(sender:UISwipeGestureRecognizer){
         if sender.direction == .left{
-            let total = AppPreferences.getMatchHighlights().count
+            var total = AppPreferences.getMatchHighlights().count
+            if self.selectedSportsType == .basketball{
+                total = AppPreferences.getBasketBallHighlights().count
+            }
             if current < (total - 1){
               current += 1
                 collectionViewHighlights.scrollToItem(at: IndexPath(row: current, section: 0), at: .centeredHorizontally, animated: true)
@@ -247,6 +312,36 @@ class HomeViewController: BaseViewController {
         self.navigationController?.pushViewController(vc, animated: true)
         
     }
+    
+//    func setupTimerForpinRefresh(){
+//        if !AppPreferences.getPinList().isEmpty{
+//            timerPinsRefresh = Timer.scheduledTimer(timeInterval: 15, target: self, selector: #selector(refreshPins), userInfo: nil, repeats: true)
+//
+//        }
+//    }
+//
+//    @objc func refreshPins(){
+//        let pins = AppPreferences.getPinList()
+//        for m in pins{
+//            viewModel.getMatchDetails(id: m.matchId ?? 0)
+//
+//        }
+//
+//    }
+//
+//    func setupTimerForPinAlert(){
+//        if !AppPreferences.getPinList().isEmpty{
+//            timerPinsAlert = Timer.scheduledTimer(timeInterval: 60, target: self, selector: #selector(showAlert), userInfo: nil, repeats: true)
+//        }
+//    }
+//
+//    @objc func showAlert(){
+//        let pins = AppPreferences.getPinList()
+//        if let obj = pins.filter({!($0.state == 0 || $0.state == -1)}).first{
+//            Utility.scheduleLocalNotificationNow(time: 1, title: "\(obj.homeName ?? "") Vs \(obj.awayName ?? "")", subTitle: "", body: "Scores - \(obj.homeScore ?? 0):\(obj.awayScore ?? 0), C - \(obj.homeCorner ?? ""):\(obj.awayCorner ?? ""), HT - \(obj.homeHalfScore ?? ""):\(obj.awayHalfScore ?? "")", data: ["id" : obj.matchId ?? 0], repeats: false)
+//
+//        }
+//    }
     
     
 }

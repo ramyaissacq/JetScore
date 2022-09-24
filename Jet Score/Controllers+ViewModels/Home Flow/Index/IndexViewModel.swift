@@ -9,12 +9,17 @@ import Foundation
 
 protocol IndexViewModelDelgate{
     func didFinishFetch()
+    func didFinishBasketIndexFetch()
 }
 
 class IndexViewModel{
     var delegate:IndexViewModelDelgate?
     var scores:[List]?
     var currentScores = [ScoreIndexModel]()
+    var basketBallCurrent = [[String]]()
+    
+    //basketball variables
+    var basketballScores:BasketballIndexList?
     
     func getIndexData(){
         //Utility.showProgress()
@@ -23,6 +28,18 @@ class IndexViewModel{
             self.delegate?.didFinishFetch()
         } failed: { msg in
            // Utility.showErrorSnackView(message: msg)
+        }
+
+    }
+    
+    
+    func getBasketballIndexData(){
+        HomeAPI().getBasketballScoresByIndex { response in
+            self.basketballScores = response.List?.first
+            self.delegate?.didFinishBasketIndexFetch()
+            
+        } failed: { _ in
+            
         }
 
     }
@@ -81,4 +98,38 @@ class IndexViewModel{
             break
         }
     }
+    
+    func filterBasketballScores(index:Int){
+        basketBallCurrent.removeAll()
+        let matchID:Double = Double(HomeCategoryViewController.matchID ?? 0)
+        switch index{
+        case 0:
+            let spread:[[Double]] = basketballScores?.spread?.filter{$0.first == matchID} ?? []
+            for m in spread{
+                if m.count > 10{
+                    let company = FootballCompany.getCompanyName(id: Int(m[1]))
+                    let arr1 = [company,String(m[9]),String(m[8]),String(m[10]),String(m[6]),String(m[5]),String(m[7]),String(m[3]),String(m[2]),String(m[4])]
+                    basketBallCurrent.append(arr1)
+                    
+                }
+            }
+            
+        case 1:
+            let total:[[Double]] = basketballScores?.total?.filter{$0.first == matchID} ?? []
+            for m in total{
+                if m.count > 10{
+                    let company = FootballCompany.getCompanyName(id: Int(m[1]))
+                    let arr1 = [company,String(m[9]),String(m[8]),String(m[10]),String(m[6]),String(m[5]),String(m[7]),String(m[3]),String(m[2]),String(m[4])]
+                    basketBallCurrent.append(arr1)
+                    
+                }
+            }
+            
+        default:
+            break
+        }
+        
+    }
+    
+    
 }

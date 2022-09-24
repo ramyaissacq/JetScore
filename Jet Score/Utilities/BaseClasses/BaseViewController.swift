@@ -40,7 +40,7 @@ class BaseViewController: UIViewController {
     }
     
     func setTitle(){
-        self.navigationItem.title = "775775SPORTS"
+        self.navigationItem.title = "JET SCORE"
     }
     
     func openVC(storyBoard:String,identifier:String){

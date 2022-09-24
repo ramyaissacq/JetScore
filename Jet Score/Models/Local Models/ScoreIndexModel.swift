@@ -16,6 +16,7 @@ struct ScoreIndexModel{
     let liveHp2:String?
     let away2:String?
     
+    
     init(companyID:Int?,home1:String?,liveHp1:String?,away1:String?,home2:String?,liveHp2:String?,away2:String?){
         self.companyID = companyID
         self.home1 = home1
@@ -29,7 +30,7 @@ struct ScoreIndexModel{
     func getArrayValue()->[String]{
         var arr = [String]()
         let company = FootballCompany.getCompanyName(id: companyID ?? 0)
-        arr.append(company ?? "")
+        arr.append(company)
         arr.append(home1 ?? "")
         arr.append(liveHp1 ?? "")
         arr.append(away1 ?? "")

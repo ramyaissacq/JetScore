@@ -13,6 +13,7 @@ class Utility: NSObject {
     enum dateFormat: String {
         case ddMMyyyyWithTimePretty = "dd-MM-yyyy HH:mm:ss"
         case ddMMyyyyWithTime = "yyyy-MM-dd'T'HH:mm:ss"
+        case yyyyMMddHHmm = "yyyy-MM-dd HH:mm"
         case ddMMyyyyWithTimeZone = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         case ddMMMyyyy = "dd-MMM-yyyy"
         case ddMMyyyy = "dd-MM-yyyy"
@@ -25,6 +26,7 @@ class Utility: NSObject {
         case hhmm = "H.mm"
         case hhmm2 = "HH:mm"
         case eddmmm = "E, d MMM"
+        case edmmmHHmm = "E, d MMM HH:mm"
     }
     
   
@@ -349,7 +351,7 @@ class Utility: NSObject {
         }
     }
     
-    class func scheduleLocalNotificationNow(time:Double,title:String,subTitle:String,body:String) {
+    class func scheduleLocalNotificationNow(time:Double,title:String,subTitle:String,body:String,data:[String:Any],repeats:Bool) {
         // Create Notification Content
         let notificationContent = UNMutableNotificationContent()
 
@@ -357,9 +359,10 @@ class Utility: NSObject {
         notificationContent.title = title
         notificationContent.subtitle = subTitle
         notificationContent.body = body
+        notificationContent.userInfo = data
 
         // Add Trigger
-        let notificationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: time, repeats: false)
+        let notificationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: time, repeats: repeats)
        
         // Create Notification Request
         let notificationRequest = UNNotificationRequest(identifier: UUID().uuidString, content: notificationContent, trigger: notificationTrigger)

@@ -21,6 +21,11 @@ class ResultCollectionViewCell: UICollectionViewCell {
         backView.backgroundColor = getColor(status: status)
     }
     
+    func configureWithBriefing(status:String){
+        lblTitle.text = status
+        backView.backgroundColor = getBriefingColor(status: status)
+    }
+    
     func getColor(status:String)->UIColor?{
         switch status{
         case "L":
@@ -34,6 +39,17 @@ class ResultCollectionViewCell: UICollectionViewCell {
             
         default:
             return UIColor(named: "green1")
+        }
+    }
+    
+    func getBriefingColor(status:String)->UIColor?{
+        switch status{
+        case "L","O":
+            return UIColor(named: "green2")
+        case "W","U":
+            return UIColor(named: "blue10")
+        default:
+            return UIColor(named: "gray10")
         }
     }
 

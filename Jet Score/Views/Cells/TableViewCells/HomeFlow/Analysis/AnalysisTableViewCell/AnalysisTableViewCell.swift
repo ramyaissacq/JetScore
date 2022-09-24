@@ -17,7 +17,9 @@ class AnalysisTableViewCell: UITableViewCell {
     @IBOutlet weak var lblHT: UILabel!
     @IBOutlet weak var lblScore: UILabel!
     
+    @IBOutlet weak var fixedLblCorner: UILabel!
     
+    @IBOutlet weak var fixedLblHT: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -42,5 +44,22 @@ class AnalysisTableViewCell: UITableViewCell {
         lblDate.text = dateArray?[1]
         
     }
+    
+    func configureCell(obj:BasketballAnalysisData?){
+        fixedLblCorner.text = "Total Points"
+        fixedLblHT.text = "Half"
+        lblLeague.text = obj?.leagueNameEn
+        lblHome.text = obj?.homeTeamEn
+        lblAway.text = obj?.awayTeamEn
+        lblScore.text = "\(obj?.homeScore ?? 0) : \(obj?.awayScore ?? 0)"
+        lblCorner.text = String(obj?.total ?? 0)
+        lblHT.text = "\(obj?.homeHalfScore ?? 0) : \(obj?.awayHalfScore ?? 0)"
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = Utility.dateFormat.yyyyMMddHHmm.rawValue
+        let dt = dateFormatter.date(from: obj?.matchTime ?? "")
+        lblDate.text = Utility.formatDate(date: dt, with: .edmmmHHmm)
+        
+    }
+    
     
 }

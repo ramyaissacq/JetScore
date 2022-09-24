@@ -40,5 +40,24 @@ struct MoneyLineAverage {
 		changeTime = json["changeTime"].stringValue
 		totalCompany = json["totalCompany"].intValue
 	}
+    
+    func toDictionary()->[String:Any]{
+        var dict = [String:Any]()
+        dict["matchId"] = matchId ?? 0
+        dict["companyId"] = companyId ?? ""
+        dict["homeTeamEn"] = homeTeamEn ?? ""
+        dict["homeTeamChs"] = homeTeamChs ?? ""
+        dict["homeTeamCht"] = homeTeamCht ?? ""
+        dict["awayTeamEn"] = awayTeamEn ?? ""
+        dict["awayTeamChs"] = awayTeamChs ?? ""
+        dict["awayTeamCht"] = awayTeamCht ?? ""
+        dict["initHomeWinRate"] = initHomeWinRate ?? 0
+        dict["initAwayWinRate"] = initAwayWinRate ?? 0
+        dict["liveHomeWinRate"] = liveHomeWinRate ?? 0
+        dict["liveAwayWinRate"] = liveAwayWinRate ?? 0
+        dict["changeTime"] = changeTime ?? ""
+        dict["totalCompany"] = totalCompany ?? 0
+        return dict
+    }
 
 }

@@ -19,6 +19,8 @@ class HighlightsCollectionViewCell: UICollectionViewCell {
         scoresView.configureView(obj: obj)
     }
     
-    
+    func configureCell(obj:BasketballMatchList?){
+        scoresView.configureView(obj: obj)
+    }
    
 }

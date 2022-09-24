@@ -45,12 +45,17 @@ class ScoresView: UIView {
     @IBOutlet weak var odds1Stack: UIStackView!
     @IBOutlet weak var cornerStack: UIStackView!
     @IBOutlet weak var cornerView: UIView!
+    @IBOutlet weak var tableViewQuarters: UITableView!
     
+    //MARK: - Variables
     var callBackIndex:(()->Void)?
     var callBackEvent:(()->Void)?
     var callBackLeague:(()->Void)?
     var callBackAnalysis:(()->Void)?
     var callBackBreifing:(()->Void)?
+    var quarters = ["","1Q","2Q","3Q","4Q","F"]
+    var homeScores = [String]()
+    var awayScores = [String]()
     
     
     override init(frame: CGRect) {
@@ -66,9 +71,30 @@ class ScoresView: UIView {
        func commonInit() {
            Bundle.main.loadNibNamed("ScoresView", owner: self, options: nil)
            contentView.fixInView(self)
+           tableViewQuarters.delegate = self
+           tableViewQuarters.dataSource = self
+           tableViewQuarters.register(UINib(nibName: "GeneralRowTableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
+           let tap = UITapGestureRecognizer(target: self, action: #selector(indexTapped))
+           viewIndex.addGestureRecognizer(tap)
+           
+           let tapAnls = UITapGestureRecognizer(target: self, action: #selector(analysisTapped))
+           viewAnalysis.addGestureRecognizer(tapAnls)
+           
+           let tapEvnt = UITapGestureRecognizer(target: self, action: #selector(eventTapped))
+           viewEvent.addGestureRecognizer(tapEvnt)
+           
+           let tapBrf = UITapGestureRecognizer(target: self, action: #selector(briefingTapped))
+           viewBriefing.addGestureRecognizer(tapBrf)
+           
+           let tapLg = UITapGestureRecognizer(target: self, action: #selector(leagueTapped))
+           viewLeague.addGestureRecognizer(tapLg)
        }
     
     func configureView(obj:MatchList?){
+        tableViewQuarters.isHidden = true
+        cornerStack.isHidden = false
+        cornerView.isHidden = false
+        viewEvent.isHidden = false
         lblName.text = obj?.leagueName
         lblHomeName.text = obj?.homeName
         lblAwayName.text = obj?.awayName
@@ -143,20 +169,62 @@ class ScoresView: UIView {
         }
         
         
-        let tap = UITapGestureRecognizer(target: self, action: #selector(indexTapped))
-        viewIndex.addGestureRecognizer(tap)
+       
+    }
+    
+    
+    func configureView(obj:BasketballMatchList?){
+        cornerStack.isHidden = true
+        cornerView.isHidden = true
+        viewEvent.isHidden = true
+        viewIndex.isHidden = false
+        odds1Stack.isHidden = false
+        odds2Stack.isHidden = false
+        indexViewYellow.isHidden = false
+        lblName.text = obj?.leagueNameEn
+        lblHomeName.text = obj?.homeTeamNameEn
+        lblAwayName.text = obj?.awayTeamNameEn
+        if obj?.matchState == 0{
+            lblScore.text = "SOON"
+        }
+        else{
+        lblScore.text = "\(obj?.homeScore ?? "" ) : \(obj?.awayScore ?? "")"
+        }
+        let date = Utility.getSystemTimeZoneTime(dateString: obj?.matchTime ?? "")
+        lblDate.text = Utility.formatDate(date: date, with: .eddmmm)
         
-        let tapAnls = UITapGestureRecognizer(target: self, action: #selector(analysisTapped))
-        viewAnalysis.addGestureRecognizer(tapAnls)
+        let matchDate = Utility.getSystemTimeZoneTime(dateString: obj?.matchTime ?? "")
+        lblTime.text = Utility.formatDate(date: matchDate, with: .hhmm2)
+       
+            lblHandicap1.text = String(obj?.odds?.moneyLineAverage?.liveHomeWinRate ?? 0)
+        if obj?.odds?.spread?.count ?? 0 > 9{
+            lblHandicap2.text = String(obj?.odds?.spread?[9] ?? 0)
+        }
+        if obj?.odds?.total?.count ?? 0 > 9{
+        lblHandicap3.text = String(obj?.odds?.total?[9] ?? 0)
+        }
         
-        let tapEvnt = UITapGestureRecognizer(target: self, action: #selector(eventTapped))
-        viewEvent.addGestureRecognizer(tapEvnt)
+        lblOverUnder1.text = String(obj?.odds?.moneyLineAverage?.liveAwayWinRate ?? 0)
+        if obj?.odds?.spread?.count ?? 0 > 10{
+        lblOverUnder2.text = String(obj?.odds?.spread?[10] ?? 0)
+        }
+        if obj?.odds?.total?.count ?? 0 > 10{
+        lblOverUnder3.text = String(obj?.odds?.total?[10] ?? 0)
+        }
+       
+        if obj?.havBriefing ?? false{
+            viewBriefing.isHidden = false
+        }
+        else{
+            viewBriefing.isHidden = true
+            
+        }
+        homeScores = ["Home",obj?.home1 ?? "",obj?.home2 ?? "",obj?.home3 ?? "",obj?.home4 ?? "",obj?.homeScore ?? ""]
+        awayScores = ["Away",obj?.away1 ?? "",obj?.away2 ?? "",obj?.away3 ?? "",obj?.away4 ?? "",obj?.awayScore ?? ""]
+        tableViewQuarters.reloadData()
+        tableViewQuarters.isHidden = false
         
-        let tapBrf = UITapGestureRecognizer(target: self, action: #selector(briefingTapped))
-        viewBriefing.addGestureRecognizer(tapBrf)
-        
-        let tapLg = UITapGestureRecognizer(target: self, action: #selector(leagueTapped))
-        viewLeague.addGestureRecognizer(tapLg)
+      
     }
     
     
@@ -175,6 +243,53 @@ class ScoresView: UIView {
     @objc func briefingTapped(){
         callBackBreifing?()
     }
+    
+}
+
+extension ScoresView:UITableViewDelegate,UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 3
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! GeneralRowTableViewCell
+        
+        if indexPath.row == 0{
+            cell.titleType = .Header(color: .black)
+            cell.backgroundColor = UIColor(named: "gray9")
+        }
+        else{
+            cell.titleType = .Normal
+            cell.backgroundColor = .clear
+        }
+        cell.headerSizes = calculateWidth()
+        cell.height = 30
+        cell.spacing = 0
+        cell.collectionHeight.constant = 30
+        cell.needBorder = true
+        if indexPath.row == 0{
+        cell.values = quarters
+        }
+        else if indexPath.row == 2{
+            cell.values = homeScores
+        }
+        else{
+            cell.values = awayScores
+        }
+        return cell
+        
+    }
+    
+    func calculateWidth()->[CGFloat]{
+        let w = UIScreen.main.bounds.width - 10
+        let width = w/CGFloat(quarters.count)
+        var sizes = [CGFloat]()
+        for _ in 0...quarters.count-1{
+            sizes.append(width)
+        }
+        return sizes
+    }
+    
     
 }
 

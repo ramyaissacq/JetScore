@@ -34,6 +34,8 @@ class SearchViewController: BaseViewController {
 }
 
 extension SearchViewController:HomeViewModelDelegate{
+   
+    
     func diFinisfFetchMatches() {
         page += 1
         doSearch(searchText: searchBar.text ?? "")
@@ -53,6 +55,9 @@ extension SearchViewController:HomeViewModelDelegate{
     }
     
     func didFinishFetchBasketballScores() {
+        
+    }
+    func didFinishFetchBasketballRecentMatches() {
         
     }
     

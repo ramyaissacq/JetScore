@@ -28,5 +28,20 @@ struct BasketOdds {
         totalHalf = json["totalHalf"].arrayValue.map { $0.doubleValue }
         totalPart = json["totalPart"].arrayValue.map { $0.doubleValue }
 	}
+    
+    func toDictionary()->[String:Any]{
+        var dict = [String:Any]()
+        dict["spread"] = spread
+        dict["spreadHalf"] = spreadHalf
+        dict["spreadPart"] = spreadPart
+        dict["moneyLine"] = moneyLine
+        dict["moneyLineAverage"] = moneyLineAverage?.toDictionary()
+        dict["total"] = total
+        dict["totalHalf"] = totalHalf
+        dict["totalPart"] = totalPart
+        return dict
+        
+        
+    }
 
 }

@@ -13,6 +13,7 @@ protocol HomeViewModelDelegate{
     func didFinishFetchRecentMatches()
     func didFinishFilterByLeague()
     func didFinishFetchBasketballScores()
+    func didFinishFetchBasketballRecentMatches()
     
 }
 
@@ -30,6 +31,7 @@ class HomeVieModel{
     
     //basketball models
     var basketballMatches:[BasketballMatchList]?
+    var originaBasketballMatches:[BasketballMatchList]?
     
     
     func getMatchesList(page:Int){
@@ -72,22 +74,63 @@ class HomeVieModel{
         
     }
     
+    func getMatchDetails(id:Int){
+        HomeAPI().getMatchDetails(id: id) { response in
+            if let obj = response.matchList?.first{
+                self.updatePins(obj: obj)
+            }
+            
+        } failed: { _ in
+            
+        }
+
+    }
     
+    // Basketball apis
     func getBasketballScores(){
         HomeAPI().getBasketballScores { response in
-            self.basketballMatches = response.matchList
+            self.originaBasketballMatches = response.matchList
+            self.delegate?.didFinishFetchBasketballScores()
+            
         } failed: { msg in
             Utility.showErrorSnackView(message: msg)
         }
 
     }
     
-    
-    
+    func getBasketballRecentMatches(date:String){
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = Utility.dateFormat.ddMMyyyy.rawValue
+        let dt = dateFormatter.date(from: date)
+        let date = Utility.formatDate(date: dt, with: .yyyyMMdd)
+        HomeAPI().getBasketballScoresPastFuture(date: date) { response in
+            self.basketballMatches = response.matchList
+            self.delegate?.didFinishFetchBasketballRecentMatches()
+        } failed: { msg in
+            Utility.showErrorSnackView(message: msg)
+        }
+        
+    }
+   
 }
 
 
 extension HomeVieModel{
+    
+    func updatePins(obj:MatchList){
+        var pins = AppPreferences.getPinList()
+        if let old = pins.filter({$0.matchId == obj.matchId}).first{
+            if old.homeScore != obj.homeScore || old.awayScore != obj.awayScore{
+                Utility.scheduleLocalNotificationNow(time: 1, title: "\(obj.homeName ?? "") Vs \(obj.awayName ?? "")", subTitle: "GOAL!!", body: "Scores - \(obj.homeScore ?? 0):\(obj.awayScore ?? 0), C - \(obj.homeCorner ?? ""):\(obj.awayCorner ?? ""), HT - \(obj.homeHalfScore ?? ""):\(obj.awayHalfScore ?? "")", data: ["id" : obj.matchId ?? 0], repeats: false)
+            }
+        }
+        let index = pins.firstIndex(where: {$0.matchId == obj.matchId})!
+        if pins.count > index{
+            pins[index] = obj
+        }
+        
+    }
+    
     func getMatchesByLeague(leagueID:Int){
         self.originals?.removeAll()
         self.matches?.removeAll()
@@ -128,6 +171,25 @@ extension HomeVieModel{
         }
         
     }
+    
+    func filterBasketballMatches(type:Int){
+        basketballMatches?.removeAll()
+        switch type{
+        case 0:
+            basketballMatches = originaBasketballMatches
+        case 1:
+            basketballMatches = originaBasketballMatches?.filter{!($0.matchState == 0 || $0.matchState == -1)}
+        case 2:
+            basketballMatches = originaBasketballMatches?.filter{$0.matchState == 0}
+        case 3:
+            basketballMatches = originaBasketballMatches?.filter{$0.matchState == -1}
+            
+        default:
+            break
+        }
+        
+    }
+    
     
     class func getRecentDates(isPast:Bool,limit:Int) -> [String]{
         let calendar = Calendar.current as NSCalendar

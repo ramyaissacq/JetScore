@@ -34,6 +34,10 @@ class IndexViewController: UIViewController {
     }
     
     func initialSetup(){
+        if HomeCategoryViewController.selectedSport == .basketball{
+            categories = ["Spread","Total"]
+            headers = ["Company","Home","Full Hand icap","Away","Home","Half Hand icap","Away","Home","1Part Hand icap","Away"]
+        }
         collectionViewCategory.registerCell(identifier: "RoundSelectionCollectionViewCell")
         collectionViewHeader.registerCell(identifier: "TitleCollectionViewCell")
         collectionViewCategory.selectItem(at: IndexPath(row: 0, section: 0), animated: false, scrollPosition: .left)
@@ -45,6 +49,9 @@ class IndexViewController: UIViewController {
         
         //Calculating cell widths for headings
         headerSizes = [85,15,15,15,15,15,15]
+        if HomeCategoryViewController.selectedSport == .basketball{
+            headerSizes = [50,15,15,15,15,15,15,15,15,15]
+        }
         let itemSpacing:CGFloat = CGFloat((headers.count - 1) * 5)
         let total_widths:CGFloat = headerSizes.reduce(0, +)
         let totalSpace:CGFloat = total_widths + itemSpacing
@@ -59,18 +66,25 @@ class IndexViewController: UIViewController {
         }
         
         viewModel.delegate = self
+        if HomeCategoryViewController.selectedSport == .soccer{
         viewModel.getIndexData()
+        }
+        else{
+        viewModel.getBasketballIndexData()
+        }
         
     }
     
-    
-    
-
-
+ 
 }
 
 
 extension IndexViewController:IndexViewModelDelgate{
+    func didFinishBasketIndexFetch() {
+        viewModel.filterBasketballScores(index: selectedCategoryIndex)
+        self.tableViewIndex.reloadData()
+    }
+    
     func didFinishFetch() {
         viewModel.filterData(index: selectedCategoryIndex)
         self.tableViewIndex.reloadData()
@@ -107,7 +121,12 @@ extension IndexViewController:UICollectionViewDelegate,UICollectionViewDataSourc
         if collectionView == collectionViewCategory{
             selectedCategoryIndex = indexPath.row
             collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+            if HomeCategoryViewController.selectedSport == .soccer{
             viewModel.filterData(index: selectedCategoryIndex)
+            }
+            else{
+                viewModel.filterBasketballScores(index: selectedCategoryIndex)
+            }
             self.tableViewIndex.reloadData()
         }
     }
@@ -133,13 +152,23 @@ extension IndexViewController:UICollectionViewDelegate,UICollectionViewDataSourc
 extension IndexViewController:UITableViewDelegate,UITableViewDataSource{
     
 func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    if HomeCategoryViewController.selectedSport == .soccer{
     return viewModel.currentScores.count
+    }
+    else{
+        return viewModel.basketBallCurrent.count
+    }
 }
 
 func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! GeneralRowTableViewCell
     cell.headerSizes = headerSizes
+    if HomeCategoryViewController.selectedSport == .soccer{
     cell.values = viewModel.currentScores[indexPath.row].getArrayValue()
+    }
+    else{
+        cell.values = viewModel.basketBallCurrent[indexPath.row]
+    }
     return cell
 }
 }
