@@ -50,6 +50,7 @@ class HomeViewController: BaseViewController {
     var selectedSportsType = SportsType.soccer
     var timerPinsRefresh = Timer()
     var timerPinsAlert = Timer()
+    var timerHighlightsRefresh = Timer()
     var isHighlights = false
     
     override func viewDidLoad() {
@@ -61,6 +62,7 @@ class HomeViewController: BaseViewController {
     @IBAction func actionTapSoccer(){
         selectedSportsType = SportsType.soccer
         handleSportsSelection()
+        resetSportType()
         if AppPreferences.getMatchHighlights().count > 0{
             collectionViewHighlightsHeight.constant = 180
             collectionViewHighlights.reloadData()
@@ -70,13 +72,14 @@ class HomeViewController: BaseViewController {
         else{
             highlightsStack.isHidden = true
         }
-        prepareDisplays()
+        
         
     }
     
     @IBAction func actionTapBasketball(){
         selectedSportsType = SportsType.basketball
         handleSportsSelection()
+        resetSportType()
         if AppPreferences.getBasketBallHighlights().count > 0{
             collectionViewHighlightsHeight.constant = 263
             collectionViewHighlights.reloadData()
@@ -86,7 +89,7 @@ class HomeViewController: BaseViewController {
         else{
             highlightsStack.isHidden = true
         }
-        prepareDisplays()
+        
     }
     
     
@@ -96,6 +99,7 @@ class HomeViewController: BaseViewController {
 //        Utility.scheduleLocalNotificationNow(time: 5, title: "Hon Kong Vs Myanmar", subTitle: "GOAL!!", body: "Scores - 3:1, C - 3:1, HT - 1:0")
 //        setupTimerForpinRefresh()
 //        setupTimerForPinAlert()
+        setupHilightsTimer()
         setupNavButtons()
         setupGestures()
         // FootballLeague.populateFootballLeagues()
@@ -185,6 +189,28 @@ class HomeViewController: BaseViewController {
         
     }
     
+    func resetSportType(){
+        viewModel.categories = viewModel.todayCategories
+        collectionViewCategory.reloadData()
+        selectedTimeIndex = 0
+        lblTime.text = "Today"
+        lblHeader.text = "Today"
+        if selectedSportsType == .soccer{
+        var arr:[String] = viewModel.scoreResponse?.todayHotLeague?.map{$0.leagueName ?? ""} ?? []
+        arr.insert("All Leagues", at: 0)
+        self.leagueDropDown?.dataSource = arr
+        lblLeague.text = arr.first
+        page = 1
+        viewModel.getMatchesList(page: page)
+        }
+        else{
+            viewModel.getBasketballScores()
+        }
+        categorySizes.removeAll()
+        collectionViewCategory.reloadData()
+        collectionViewCategory.selectItem(at: IndexPath(row: 0, section: 0), animated: true, scrollPosition: .centeredHorizontally)
+    }
+    
     
     func configureTimeDropDown(){
         timeDropDown = DropDown()
@@ -199,6 +225,7 @@ class HomeViewController: BaseViewController {
             switch index{
             case 0:
                 viewModel.categories = viewModel.todayCategories
+                collectionViewCategory.reloadData()
                 if selectedSportsType == .soccer{
                 var arr:[String] = viewModel.scoreResponse?.todayHotLeague?.map{$0.leagueName ?? ""} ?? []
                 arr.insert("All Leagues", at: 0)
@@ -247,6 +274,7 @@ class HomeViewController: BaseViewController {
         right.direction = .right
         right.delegate = self
         collectionViewHighlights.addGestureRecognizer(right)
+        
     }
     
     
@@ -282,12 +310,14 @@ class HomeViewController: BaseViewController {
         
     }
     
+   
+    
     @objc func refresh(){
         if selectedTimeIndex == 0 && selectedLeagueID == nil{
             page = 1
             viewModel.getMatchesList(page: page)
-            refreshControl?.endRefreshing()
         }
+        refreshControl?.endRefreshing()
     }
     
     func setupNavButtons(){
@@ -309,7 +339,28 @@ class HomeViewController: BaseViewController {
         vc.viewModel.originals = viewModel.originals
         vc.viewModel.pageData = viewModel.pageData
         vc.page = page
+        vc.viewModel.originaBasketballMatches = viewModel.originaBasketballMatches
+        vc.selectedSport = self.selectedSportsType
         self.navigationController?.pushViewController(vc, animated: true)
+        
+    }
+    
+    func setupHilightsTimer(){
+        if !(AppPreferences.getMatchHighlights().isEmpty) || !(AppPreferences.getBasketBallHighlights().isEmpty){
+            timerHighlightsRefresh = Timer.scheduledTimer(timeInterval: 15, target: self, selector: #selector(refreshHilights), userInfo: nil, repeats: true)
+        }
+    }
+    
+    @objc func refreshHilights(){
+        for m in AppPreferences.getMatchHighlights(){
+            print("football id: \(m.matchId ?? 0)")
+            viewModel.getMatchDetails(id: m.matchId ?? 0)
+        }
+        
+        for m in AppPreferences.getBasketBallHighlights(){
+            print("basketball id: \(m.matchId ?? 0)")
+            viewModel.getBasketballMatchDetails(id: m.matchId ?? 0)
+        }
         
     }
     

@@ -38,6 +38,7 @@ class MatchOptionsViewController: UIViewController {
     @IBAction func actionClose(){
         callbackClose?()
         SwiftEntryKit.dismiss()
+        
     }
     
     func initialSettings(){
@@ -54,19 +55,22 @@ class MatchOptionsViewController: UIViewController {
     
     @objc func actionTapReminder(){
         callbackReminder?()
-        SwiftEntryKit.dismiss()
+        
         
     }
     
     @objc func actionTapHighlights(){
         callbackHighLights?()
         SwiftEntryKit.dismiss()
+       
+      
         
     }
   
     @objc func actionTapPin(){
         callbackPin?()
         SwiftEntryKit.dismiss()
+       
         
     }
 

@@ -28,14 +28,14 @@ class Dialog: NSObject {
         SwiftEntryKit.display(entry: viewController, using: attributes)
     }
     
-    private class func openViewControllerAsDialog(viewController: UIViewController)
+    private class func openViewControllerAsDialog(viewController: UIViewController,name:String?)
     {
         openViewControllerAsDialog(viewController: viewController, dismissed: nil)
     }
     
     
     
-    private class func openViewControllerAsBottomSheet(touchDismiss: Bool, viewController: UIViewController)
+    private class func openViewControllerAsBottomSheet(touchDismiss: Bool, viewController: UIViewController,dismissed:(()->Void)?)
     {
         var attributes = EKAttributes.init()
         attributes.entranceAnimation = .translation
@@ -56,7 +56,8 @@ class Dialog: NSObject {
         attributes.screenBackground = .color(color: EKColor(UIColor(white: 0.0, alpha: 0.6)))
         attributes.positionConstraints = .fullWidth
         attributes.positionConstraints.safeArea = .empty(fillSafeArea: true)
-        attributes.entryBackground = .color(color: EKColor(UIColor(named: "vcBg")!))
+        attributes.lifecycleEvents.didDisappear = dismissed
+        attributes.entryBackground = .color(color: EKColor(UIColor.white))
         attributes.roundCorners = EKAttributes.RoundCorners.top(radius: 10)
         SwiftEntryKit.display(entry: viewController, using: attributes)
     }
@@ -72,7 +73,7 @@ class Dialog: NSObject {
             completed()
         }
         
-        openViewControllerAsDialog(viewController: vc)
+        openViewControllerAsDialog(viewController: vc, name: nil)
     }
     
     class func openMatchOptionsDialog(callReminder:@escaping()->(),callHighlights:@escaping()->(),callPin:@escaping()->(),callClose:@escaping()->()){
@@ -81,31 +82,32 @@ class Dialog: NSObject {
         vc.callbackHighLights = callHighlights
         vc.callbackPin = callPin
         vc.callbackClose = callClose
-        openViewControllerAsDialog(viewController: vc, dismissed: callClose)
+        openViewControllerAsDialog(viewController: vc,dismissed: callClose)
         
     }
     
     
     
-    class func openSuccessDialog(buttonLabel :String,title :String,msg :String, completed : @escaping ()->(), dismissed : @escaping ()->()){
+    class func openSuccessDialog(buttonLabel :String,title :String,msg :String, completed : (()->())?, dismissed : (()->())?){
         let vc = SuccessfullDialog.instance()
         vc.buttonLabel = buttonLabel
         vc.messageString = msg
         vc.titleString = title
         vc.confirmationButtonClicked = {
-            completed()
+            completed?()
         }
         
         openViewControllerAsDialog(viewController: vc, dismissed: dismissed)
     }
     
-    class func openConfirmationDialog(title: String, message: String, proceedButtonClicked: @escaping (() -> Void))
+    class func openConfirmationDialog(title: String, message: String, proceedButtonClicked: @escaping (() -> Void),dismissed: (()->Void)?)
     {
         let vc = ConfirmationViewController.instance()
         vc.messageString = message
         vc.titleString = title
         vc.confirmButtonClicked = proceedButtonClicked
-        openViewControllerAsBottomSheet(touchDismiss: true, viewController: vc)
+        vc.cancelButtonClicked = dismissed
+        openViewControllerAsBottomSheet(touchDismiss: true, viewController: vc, dismissed: dismissed)
     }
     
     class func openLocationErrorDialog(parent viewController: UIViewController)

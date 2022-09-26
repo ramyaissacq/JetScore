@@ -32,6 +32,18 @@ class AppPreferences {
            userDefaults.set(dict, forKey: Keys.matchHighlights.rawValue)
        }
     
+    class func removeFromHilights(id:Int){
+        let userDefaults = UserDefaults.standard
+        var matches = getMatchHighlights()
+        matches.remove(at: matches.firstIndex(where: {$0.matchId == id})!)
+        var dict = [[String:Any]]()
+        for m in matches{
+            dict.append(m.toDictionary())
+        }
+        userDefaults.set(dict, forKey: Keys.matchHighlights.rawValue)
+        
+    }
+    
    
        class func getMatchHighlights() -> [MatchList]
        {
@@ -63,6 +75,18 @@ class AppPreferences {
            
            userDefaults.set(dict, forKey: Keys.basketBallHighlights.rawValue)
        }
+    
+    class func removeBasketballhilight(id:Int){
+        let userDefaults = UserDefaults.standard
+        var matches = getBasketBallHighlights()
+        matches.remove(at: matches.firstIndex(where: {$0.matchId == id})!)
+        var dict = [[String:Any]]()
+        for m in matches{
+            dict.append(m.toDictionary())
+        }
+        
+        userDefaults.set(dict, forKey: Keys.basketBallHighlights.rawValue)
+    }
     
     class func getBasketBallHighlights() -> [BasketballMatchList]
     {

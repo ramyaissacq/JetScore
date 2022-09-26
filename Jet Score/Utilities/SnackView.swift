@@ -1,6 +1,7 @@
 
 
 import UIKit
+import SwiftEntryKit
 
 class SnackView: NSObject {
     var snackView: UIView!
@@ -95,17 +96,21 @@ class SnackView: NSObject {
                     self.isSnackViewShowing = false
                     self.snackView = nil
                     dismissed()
+                    SwiftEntryKit.dismiss()
                 }
             }
         }
         else
         {
+           
             dismissed()
+            // SwiftEntryKit.dismiss()
         }
     }
     
     @objc func hideSnackView()
     {
+        //SwiftEntryKit.dismiss()
         hideSnackViewCallback {
             
         }

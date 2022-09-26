@@ -314,7 +314,7 @@ class Utility: NSObject {
         return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
     }
     
-    class func scheduleLocalNotification(date:Date,subTitle:String,body:String) {
+    class func scheduleLocalNotification(date:Date,subTitle:String,body:String,success:(()->Void)?,failed:(()->Void)?) {
         // Create Notification Content
         let notificationContent = UNMutableNotificationContent()
 
@@ -339,17 +339,12 @@ class Utility: NSObject {
         UNUserNotificationCenter.current().add(notificationRequest) { (error) in
             if let error = error {
                 print("Unable to Add Notification Request (\(error), \(error.localizedDescription))")
-                DispatchQueue.main.async {
-                Utility.showErrorSnackView(message: "Unable to Add Reminder")
-                }
+                failed?()
             }
-            DispatchQueue.main.async {
-                Utility.showSuccessSnackView(message: "Reminder saved successfully", iconName: "")
-                
-            }
-            
+            success?()
         }
     }
+    
     
     class func scheduleLocalNotificationNow(time:Double,title:String,subTitle:String,body:String,data:[String:Any],repeats:Bool) {
         // Create Notification Content

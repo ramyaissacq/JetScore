@@ -12,9 +12,22 @@ protocol HomeViewModelDelegate{
     func getCurrentPage()->Int
     func didFinishFetchRecentMatches()
     func didFinishFilterByLeague()
+    func didFinishFetchMatchDetails()
     func didFinishFetchBasketballScores()
     func didFinishFetchBasketballRecentMatches()
+    func didFinishFetchBasketballScoreDetails()
     
+}
+
+ extension HomeViewModelDelegate{
+     func getCurrentPage()->Int{return 0}
+     func didFinishFetchRecentMatches(){}
+     func didFinishFilterByLeague(){}
+     func didFinishFetchBasketballScores(){}
+     func didFinishFetchBasketballRecentMatches(){}
+     func didFinishFetchBasketballScoreDetails(){}
+     func didFinishFetchMatchDetails(){}
+     
 }
 
 class HomeVieModel{
@@ -77,8 +90,13 @@ class HomeVieModel{
     func getMatchDetails(id:Int){
         HomeAPI().getMatchDetails(id: id) { response in
             if let obj = response.matchList?.first{
-                self.updatePins(obj: obj)
+               // self.updatePins(obj: obj)
+                self.updateFootballHilights(obj: obj)
             }
+            else{
+                AppPreferences.removeFromHilights(id: id)
+            }
+            self.delegate?.didFinishFetchMatchDetails()
             
         } failed: { _ in
             
@@ -97,6 +115,24 @@ class HomeVieModel{
         }
 
     }
+    
+    
+    func getBasketballMatchDetails(id:Int){
+        HomeAPI().getBasketballMatchDetails(id: id) { response in
+            if let obj = response.matchList?.first{
+                self.updateBasketballHighlights(obj: obj)
+            }
+            else{
+                AppPreferences.removeBasketballhilight(id: id)
+            }
+            self.delegate?.didFinishFetchBasketballScoreDetails()
+            
+        } failed: { _ in
+            
+        }
+        
+    }
+    
     
     func getBasketballRecentMatches(date:String){
         let dateFormatter = DateFormatter()
@@ -117,18 +153,27 @@ class HomeVieModel{
 
 extension HomeVieModel{
     
+    func updateFootballHilights(obj:MatchList){
+        AppPreferences.addToHighlights(obj: obj)
+        
+    }
+    
+    func updateBasketballHighlights(obj:BasketballMatchList){
+        AppPreferences.addToBasketballHighlights(obj: obj)
+    }
+    
     func updatePins(obj:MatchList){
-        var pins = AppPreferences.getPinList()
+        let pins = AppPreferences.getPinList()
         if let old = pins.filter({$0.matchId == obj.matchId}).first{
             if old.homeScore != obj.homeScore || old.awayScore != obj.awayScore{
                 Utility.scheduleLocalNotificationNow(time: 1, title: "\(obj.homeName ?? "") Vs \(obj.awayName ?? "")", subTitle: "GOAL!!", body: "Scores - \(obj.homeScore ?? 0):\(obj.awayScore ?? 0), C - \(obj.homeCorner ?? ""):\(obj.awayCorner ?? ""), HT - \(obj.homeHalfScore ?? ""):\(obj.awayHalfScore ?? "")", data: ["id" : obj.matchId ?? 0], repeats: false)
             }
         }
-        let index = pins.firstIndex(where: {$0.matchId == obj.matchId})!
-        if pins.count > index{
-            pins[index] = obj
-        }
-        
+//        let index = pins.firstIndex(where: {$0.matchId == obj.matchId})!
+//        if pins.count > index{
+//            pins[index] = obj
+//        }
+        AppPreferences.addToPinlist(obj: obj)
     }
     
     func getMatchesByLeague(leagueID:Int){

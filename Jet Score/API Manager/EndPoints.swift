@@ -18,6 +18,7 @@ enum EndPoints: String ,CaseIterable {
     case basketball_analysis = "lqbf-match-analysis"
     case basketball_league = "lqbf-list-league"
     case basketball_briefing = "lqbf-match-briefing"
+    case basketball_match_details = "lqbf-list-match"
     case newsList = "post-list"
     case videoList = "video-list"
     case newsDetails = "post"

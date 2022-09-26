@@ -16,6 +16,7 @@ class SearchViewController: BaseViewController {
     
     var viewModel = HomeVieModel()
     var page = 1
+    var selectedSport = SportsType.soccer
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,7 +35,6 @@ class SearchViewController: BaseViewController {
 }
 
 extension SearchViewController:HomeViewModelDelegate{
-   
     
     func diFinisfFetchMatches() {
         page += 1
@@ -42,24 +42,7 @@ extension SearchViewController:HomeViewModelDelegate{
         
     }
     
-    func getCurrentPage() -> Int {
-      return 0
-    }
     
-    func didFinishFetchRecentMatches() {
-        
-    }
-    
-    func didFinishFilterByLeague() {
-        
-    }
-    
-    func didFinishFetchBasketballScores() {
-        
-    }
-    func didFinishFetchBasketballRecentMatches() {
-        
-    }
     
     
 }
@@ -73,20 +56,29 @@ extension SearchViewController:UISearchBarDelegate{
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.trim() != ""{
             doSearch(searchText: searchText)
-            
         }
         else{
+            if selectedSport == .soccer{
             self.viewModel.matches?.removeAll()
+            }
+            else{
+                self.viewModel.basketballMatches?.removeAll()
+            }
             tableView.reloadData()
         }
         
     }
     
     func doSearch(searchText:String){
+        if selectedSport == .soccer{
         self.viewModel.matches?.removeAll()
         self.viewModel.matches = self.viewModel.originals?.filter{($0.leagueName?.lowercased().contains(searchText.lowercased()) ?? false) || ($0.homeName?.lowercased().contains(searchText.lowercased()) ?? false) || ($0.awayName?.lowercased().contains(searchText.lowercased()) ?? false)}
+        }
+        else{
+            self.viewModel.basketballMatches?.removeAll()
+            self.viewModel.basketballMatches = self.viewModel.originaBasketballMatches?.filter{($0.leagueNameEn?.lowercased().contains(searchText.lowercased()) ?? false) || ($0.homeTeamEn?.lowercased().contains(searchText.lowercased()) ?? false) || ($0.awayTeamEn?.lowercased().contains(searchText.lowercased()) ?? false)}
+        }
         tableView.reloadData()
-        
     }
     
     
@@ -95,16 +87,23 @@ extension SearchViewController:UISearchBarDelegate{
 //MARK: - TableView Delegates
 extension SearchViewController:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
+        if selectedSport == .soccer{
         return self.viewModel.matches?.count ?? 0
+        }
+        else{
+            return self.viewModel.basketballMatches?.count ?? 0
+        }
     }
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        if selectedSport == .soccer{
         if indexPath.row == (self.viewModel.matches?.count ?? 0) - 1{
             if (viewModel.pageData?.lastPage ?? 0) > page{
                 viewModel.getMatchesList(page: page)
             }
+        }
         }
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! ScoresTableViewCell
@@ -126,19 +125,34 @@ extension SearchViewController:UITableViewDelegate,UITableViewDataSource{
         }
         cell.callLeagueSelection = {
             self.goToCategory(index: indexPath.row, category: .league)
-            
         }
-        
+        if selectedSport == .soccer{
         cell.configureCell(obj: self.viewModel.matches?[indexPath.row])
+        }
+        else{
+            cell.configureCell(obj: self.viewModel.basketballMatches?[indexPath.row])
+        }
         return cell
         
     }
     
     func goToCategory(index:Int,category:HomeCategory){
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "HomeCategoryViewController") as! HomeCategoryViewController
-        HomeCategoryViewController.matchID = self.viewModel.matches?[index].matchId
-        vc.selectedMatch =  self.viewModel.matches?[index]
+        var obj:MatchList?
+        var basketMatch:BasketballMatchList?
+        
+        if selectedSport == .soccer{
+            obj = viewModel.matches?[index]
+        HomeCategoryViewController.matchID = obj?.matchId
+        }
+        else{
+            basketMatch = viewModel.basketballMatches?[index]
+            HomeCategoryViewController.matchID = basketMatch?.matchId
+        }
+        vc.selectedMatch =  obj
         vc.selectedCategory = category
+        vc.basketMatch = basketMatch
+        HomeCategoryViewController.selectedSport = selectedSport
         self.navigationController?.pushViewController(vc, animated: true)
         
     }

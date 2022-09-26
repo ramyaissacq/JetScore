@@ -92,6 +92,14 @@ class HomeAPI: WebService {
         }, failed: failed)
     }
     
+    func getBasketballMatchDetails(id:Int,completion:@escaping (BasketballScoreResponse) -> Void, failed: @escaping (String) -> Void){
+        let url = BaseUrl.getBaseUrl() + EndPoints.basketball_match_details.rawValue + "/\(id)"
+        get(url: url, params: [:], completion: { json in
+            let response = BasketballScoreResponse(json!)
+            completion(response)
+        }, failed: failed)
+    }
+    
     func getBasketballScoresPastFuture(date:String,completion:@escaping (BasketballScoreResponse) -> Void, failed: @escaping (String) -> Void){
         let url = BaseUrl.getBaseUrl() + EndPoints.basketball_past_future.rawValue + "/\(date)"
         get(url: url, params: [:], completion: { json in

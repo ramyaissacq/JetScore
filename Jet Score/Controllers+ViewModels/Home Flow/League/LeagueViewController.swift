@@ -48,6 +48,9 @@ class LeagueViewController: UIViewController {
     
     
     func initialSetting(){
+        if HomeCategoryViewController.selectedSport == .basketball{
+            types = ["League / Cup Information"]
+        }
         collectionViewTypes.registerCell(identifier: "SelectionCollectionViewCell")
         tableViewLeague.register(UINib(nibName: "LeagueTableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
         collectionViewTypes.selectItem(at: IndexPath(row: 0, section: 0), animated: false, scrollPosition: .left)
@@ -214,6 +217,7 @@ extension LeagueViewController:UICollectionViewDelegate,UICollectionViewDataSour
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == collectionViewTypes{
+            if HomeCategoryViewController.selectedSport == .soccer{
         let w = (UIScreen.main.bounds.width - 30) / 2
             if indexPath.row == 0{
                 return CGSize(width: w-10, height: 35)
@@ -222,6 +226,11 @@ extension LeagueViewController:UICollectionViewDelegate,UICollectionViewDataSour
                 let strW = "Match".width(forHeight: 19, font: UIFont(name: "Poppins-Regular", size: 19)!)
                let width2 = strW + 16
               return CGSize(width: width2, height: 35)
+            }
+            }
+            else{
+                let w = UIScreen.main.bounds.width - 15
+                return CGSize(width: w, height: 35)
             }
         }
         else{
