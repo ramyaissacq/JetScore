@@ -221,6 +221,8 @@
 		AD823C0328DF0EC0008A37BD /* BasketballBriefingDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD823C0228DF0EC0008A37BD /* BasketballBriefingDetails.swift */; };
 		AD9ACF0928DDA43800770BA0 /* BasketballIndexList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9ACF0728DDA43800770BA0 /* BasketballIndexList.swift */; };
 		AD9ACF0A28DDA43800770BA0 /* BasketballIndexResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9ACF0828DDA43800770BA0 /* BasketballIndexResponse.swift */; };
+		ADFA527A28E2BDE9004E81BF /* LeagueStandingResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFA527928E2BDE9004E81BF /* LeagueStandingResponse.swift */; };
+		ADFA527D28E2CD78004E81BF /* LeagueStandingNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFA527C28E2CD78004E81BF /* LeagueStandingNew.swift */; };
 		B7F631DC17AC4E8580F34348 /* Pods_Jet_Score.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C67006C0CCDD6E76676E2EBC /* Pods_Jet_Score.framework */; };
 /* End PBXBuildFile section */
 
@@ -463,6 +465,8 @@
 		AD823C0228DF0EC0008A37BD /* BasketballBriefingDetails.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasketballBriefingDetails.swift; sourceTree = "<group>"; };
 		AD9ACF0728DDA43800770BA0 /* BasketballIndexList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasketballIndexList.swift; sourceTree = "<group>"; };
 		AD9ACF0828DDA43800770BA0 /* BasketballIndexResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasketballIndexResponse.swift; sourceTree = "<group>"; };
+		ADFA527928E2BDE9004E81BF /* LeagueStandingResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeagueStandingResponse.swift; sourceTree = "<group>"; };
+		ADFA527C28E2CD78004E81BF /* LeagueStandingNew.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeagueStandingNew.swift; sourceTree = "<group>"; };
 		B5658E12CD46292F9BAC3BCC /* Pods-Jet Score.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Jet Score.debug.xcconfig"; path = "Target Support Files/Pods-Jet Score/Pods-Jet Score.debug.xcconfig"; sourceTree = "<group>"; };
 		C67006C0CCDD6E76676E2EBC /* Pods_Jet_Score.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Jet_Score.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E27CAF35949C58E077D16B29 /* Pods_Jet_ScoreTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Jet_ScoreTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1344,6 +1348,7 @@
 		AD4D734628DC4E0000B4EEAE /* TeamStandings */ = {
 			isa = PBXGroup;
 			children = (
+				ADFA527B28E2CD50004E81BF /* LeagueStandingNew */,
 				AD4D734728DC4E0000B4EEAE /* HalfStandings.swift */,
 				AD4D734828DC4E0000B4EEAE /* AwayStandings.swift */,
 				AD4D734928DC4E0000B4EEAE /* TotalStandings.swift */,
@@ -1542,6 +1547,15 @@
 				AD9ACF0828DDA43800770BA0 /* BasketballIndexResponse.swift */,
 			);
 			path = Basketball;
+			sourceTree = "<group>";
+		};
+		ADFA527B28E2CD50004E81BF /* LeagueStandingNew */ = {
+			isa = PBXGroup;
+			children = (
+				ADFA527928E2BDE9004E81BF /* LeagueStandingResponse.swift */,
+				ADFA527C28E2CD78004E81BF /* LeagueStandingNew.swift */,
+			);
+			path = LeagueStandingNew;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1846,6 +1860,7 @@
 				AD4D742A28DC4E0000B4EEAE /* UIColor+Extension.swift in Sources */,
 				AD4D738128DC4E0000B4EEAE /* UploadFile.swift in Sources */,
 				AD4D740E28DC4E0000B4EEAE /* EventResponse.swift in Sources */,
+				ADFA527D28E2CD78004E81BF /* LeagueStandingNew.swift in Sources */,
 				AD4D73B428DC4E0000B4EEAE /* VideoTableViewCell.swift in Sources */,
 				AD4D739F28DC4E0000B4EEAE /* BriefingViewController.swift in Sources */,
 				AD4D742928DC4E0000B4EEAE /* UIImageView+Extension.swift in Sources */,
@@ -1890,6 +1905,7 @@
 				AD4D73F828DC4E0000B4EEAE /* TodayHotLeague.swift in Sources */,
 				AD4D73CC28DC4E0000B4EEAE /* EventsHeaderTableViewCell.swift in Sources */,
 				AD4D739D28DC4E0000B4EEAE /* SearchViewController.swift in Sources */,
+				ADFA527A28E2BDE9004E81BF /* LeagueStandingResponse.swift in Sources */,
 				AD4D740828DC4E0000B4EEAE /* LeagueData01.swift in Sources */,
 				AD4D73C228DC4E0000B4EEAE /* AnalysisHeaderTableViewCell.swift in Sources */,
 				AD4D73DD28DC4E0000B4EEAE /* TeamCollectionViewCell.swift in Sources */,

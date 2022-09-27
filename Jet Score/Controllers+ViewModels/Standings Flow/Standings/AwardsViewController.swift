@@ -24,9 +24,11 @@ class AwardsViewController: BaseViewController {
     //MARK: - Variables
     var tableViewStandingsObserver: NSKeyValueObservation?
     var topTitles = ["Team Standings","Player Standings"]
-    var headings1 = ["Ranking","Team Name","MP","W","D","L","GF","GA","PTs","More"]
+    var normalTeamHeadings = ["Ranking","Team Name","MP","W","D","L","GF","GA","PTs","More"]
     var headings2 = ["Rank","Team Name","Player Name","Goals","Home","Away","More"]
-    var firstHeaderSizes = [CGFloat]()
+    var rareTeamHeadings = ["Ranking","Team Name","MP","W","D","L","GF","GA","PTs"]
+    var normalHeaderSizes = [CGFloat]()
+    var rareHeaderSizes = [CGFloat]()
     var secondHeaderSizes = [CGFloat]()
     var headers = [String]()
     var headerSizes = [CGFloat]()
@@ -63,25 +65,34 @@ class AwardsViewController: BaseViewController {
         lblSports.text = "Football"
         lblLeague.text = FootballLeague.leagues?.first?.name
         selectedLeagueID = FootballLeague.leagues?.first?.id
-        headers = headings1
+        //headers = headings1
         collectionViewTop.registerCell(identifier: "SelectionCollectionViewCell")
         collectionViewHeading.registerCell(identifier: "TitleCollectionViewCell")
         tableViewStandings.register(UINib(nibName: "StandingsTableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
+        tableViewStandings.register(UINib(nibName: "GeneralRowTableViewCell", bundle: nil), forCellReuseIdentifier: "cell1")
         tableViewStandingsObserver = tableViewStandings.observe(\.contentSize, options: .new) { (_, change) in
             guard let height = change.newValue?.height else { return }
             self.tableViewStandingsHeight.constant = height
         }
         collectionViewTop.selectItem(at: IndexPath(row: 0, section: 0), animated: false, scrollPosition: .left)
         
-        //Calculating cell widths for headings1
-        firstHeaderSizes = [40,85,15,15,15,15,15,15,20,25]
-        var itemSpacing:CGFloat = CGFloat((headings1.count - 1) * 5)
-        var total_widths:CGFloat = firstHeaderSizes.reduce(0, +)
+        //Calculating cell widths for normalTeamHeadings
+        normalHeaderSizes = [40,85,15,15,15,15,15,15,20,25]
+        var itemSpacing:CGFloat = CGFloat((normalTeamHeadings.count - 1) * 5)
+        var total_widths:CGFloat = normalHeaderSizes.reduce(0, +)
         var totalSpace:CGFloat = total_widths + itemSpacing
-        var balance = (UIScreen.main.bounds.width - totalSpace)/CGFloat(headings1.count)
-        firstHeaderSizes = firstHeaderSizes.map{$0+balance}
-        headerSizes = firstHeaderSizes
+        var balance = (UIScreen.main.bounds.width - totalSpace)/CGFloat(normalTeamHeadings.count)
+        normalHeaderSizes = normalHeaderSizes.map{$0+balance}
+        headerSizes = normalHeaderSizes
         
+        //Calculating cell widths for rareTeamHeadings
+        rareHeaderSizes = [40,85,15,15,15,15,15,15,20]
+         itemSpacing = CGFloat((rareTeamHeadings.count - 1) * 5)
+         total_widths = rareHeaderSizes.reduce(0, +)
+         totalSpace = total_widths + itemSpacing
+         balance = (UIScreen.main.bounds.width - totalSpace)/CGFloat(rareTeamHeadings.count)
+        rareHeaderSizes = rareHeaderSizes.map{$0+balance}
+      
         //Calculating cell widths for headings2
         secondHeaderSizes = [25,85,85,25,25,25,25]
        itemSpacing = CGFloat((headings2.count - 1) * 5)
@@ -89,6 +100,9 @@ class AwardsViewController: BaseViewController {
         totalSpace = total_widths + itemSpacing
         balance = (UIScreen.main.bounds.width - totalSpace)/CGFloat(headings2.count)
         secondHeaderSizes = secondHeaderSizes.map{$0+balance}
+        
+        
+        
         viewModel.delegate = self
         viewModel.getTeamStandings(leagueID: selectedLeagueID!, subLeagueID: 0)
         viewModel.getPlayerStandings(leagueID: selectedLeagueID!)
@@ -97,8 +111,17 @@ class AwardsViewController: BaseViewController {
     
     func setupViews(){
         if selectedTopTitleIndex == 0{
-            headers = headings1
-            headerSizes = firstHeaderSizes
+            if viewModel.isNormalStanding{
+            headers = normalTeamHeadings
+            headerSizes = normalHeaderSizes
+            
+                collectionViewHeading.isHidden = false
+            }
+            else{
+                headers = rareTeamHeadings
+                headerSizes = rareHeaderSizes
+                collectionViewHeading.isHidden = true
+            }
             imgLogo.isHidden = false
             
         }
@@ -106,6 +129,7 @@ class AwardsViewController: BaseViewController {
             headers = headings2
             headerSizes = secondHeaderSizes
             imgLogo.isHidden = true
+            collectionViewHeading.isHidden = false
             
         }
         collectionViewHeading.reloadData()
@@ -116,17 +140,23 @@ class AwardsViewController: BaseViewController {
     
     func emptyChecks(){
         if selectedTopTitleIndex == 0{
-            if viewModel.teamStandings?.totalStandings?.count ?? 0 > 0{
-                collectionViewHeading.isHidden = false
-                tableViewStandings.isHidden = false
-                leagueView.isHidden = false
-                emptyView.isHidden = true
-            }
-            else{
+            if (viewModel.isNormalStanding && viewModel.normalStandings?.totalStandings?.isEmpty ?? false) || (!viewModel.isNormalStanding &&  viewModel.leaguStanding?.list?.first?.score?.first?.groupScore?.isEmpty ?? true){
                 collectionViewHeading.isHidden = true
                 tableViewStandings.isHidden = true
                 leagueView.isHidden = true
                 emptyView.isHidden = false
+                
+            }
+            else{
+                if viewModel.isNormalStanding{
+                collectionViewHeading.isHidden = false
+                }
+                else{
+                    collectionViewHeading.isHidden = true
+                }
+                tableViewStandings.isHidden = false
+                leagueView.isHidden = false
+                emptyView.isHidden = true
                 
             }
         }

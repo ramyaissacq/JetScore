@@ -169,7 +169,7 @@ class LeagueViewModel{
     }
     
     
-    //Methods for handling rare standing onject display
+    //Methods for handling rare standing object display
     func getRareStandingRowByIndex(section:Int,row:Int)->[String]{
         var standings = [String]()
         let obj = leaguStanding?.list?.first?.score?.first?.groupScore?[section].scoreItems?[row]

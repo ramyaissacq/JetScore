@@ -10,13 +10,14 @@ import UIKit
 
 extension AwardsViewController:AwardsViewModeldelegate{
     func didFinishTeamStandingsFetch() {
-        imgLogo.setImage(with: viewModel.teamStandings?.leagueInfo?.logo, placeholder: Utility.getPlaceHolder())
+        imgLogo.setImage(with: viewModel.leaguDetails?.leagueData01?.first?.leagueLogo, placeholder: Utility.getPlaceHolder())
         if selectedTopTitleIndex == 0{
-            lblSelectedLeague.text = (viewModel.teamStandings?.leagueInfo?.nameEn ?? "") + " " + (viewModel.teamStandings?.leagueInfo?.season ?? "")
+            lblSelectedLeague.text = (viewModel.leaguDetails?.leagueData01?.first?.nameEn ?? "") + " " + (viewModel.leaguDetails?.leagueData01?.first?.currSeason ?? "")
         imgLogo.isHidden = false
-           emptyChecks()
+            setupViews()
+          
         }
-        self.tableViewStandings.reloadData()
+        
         
     }
     
@@ -24,9 +25,9 @@ extension AwardsViewController:AwardsViewModeldelegate{
         if selectedTopTitleIndex == 1{
             lblSelectedLeague.text = lblLeague.text
             imgLogo.isHidden = true
-           emptyChecks()
+            setupViews()
         }
-        self.tableViewStandings.reloadData()
+       
     
     }
     
@@ -81,9 +82,26 @@ extension AwardsViewController:UICollectionViewDelegate,UICollectionViewDataSour
 }
 
 extension AwardsViewController:UITableViewDelegate,UITableViewDataSource{
+    func numberOfSections(in tableView: UITableView) -> Int {
+        if selectedTopTitleIndex == 0{
+            if viewModel.isNormalStanding{
+                return 1
+            }
+            return viewModel.leaguStanding?.list?.first?.score?.first?.groupScore?.count ?? 0
+        }
+        else{
+            return 1
+        }
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if selectedTopTitleIndex == 0{
-            return viewModel.teamStandings?.totalStandings?.count ?? 0
+            if viewModel.isNormalStanding{
+                return viewModel.normalStandings?.totalStandings?.count ?? 0
+               
+            }
+            else{
+                return (viewModel.leaguStanding?.list?.first?.score?.first?.groupScore?[section].scoreItems?.count ?? 0) + 1
+            }
         }
         else{
             return viewModel.playerStandings?.count ?? 0
@@ -91,26 +109,45 @@ extension AwardsViewController:UITableViewDelegate,UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! StandingsTableViewCell
-        //cell.cellIndex = indexPath.row
-        cell.headerSizes = headerSizes
-        if selectedTopTitleIndex == 0{
-            let standings = viewModel.getTeamRowByIndex(index: indexPath.row)
-            let results = viewModel.getResultsArrayByIndex(index: indexPath.row)
-            let percentageStr = viewModel.getResultsPercentageStringByIndex(index: indexPath.row)
-            cell.configureTeamStandings(index: indexPath.row, standings: standings, results: results, resultsPercentage: percentageStr)
+        
+        if selectedTopTitleIndex == 0 && viewModel.isNormalStanding == false{
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell1") as! GeneralRowTableViewCell
+            cell.headerSizes = headerSizes
+            if indexPath.row == 0{
+                cell.titleType = .RedHeader
+                cell.backgroundColor = UIColor(named: "red2")
+                cell.values = rareTeamHeadings
+            }
+            else{
+                cell.titleType = .Normal
+                cell.backgroundColor = .clear
+            cell.values = viewModel.getRareStandingRowByIndex(section: indexPath.section, row: indexPath.row-1)
+            }
+            return cell
         }
         else{
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! StandingsTableViewCell
+            //cell.cellIndex = indexPath.row
+            cell.headerSizes = headerSizes
+            if selectedTopTitleIndex == 0{
+                let standings = viewModel.getTeamRowByIndex(index: indexPath.row)
+                let results = viewModel.getResultsArrayByIndex(index: indexPath.row)
+                let percentageStr = viewModel.getResultsPercentageStringByIndex(index: indexPath.row)
+                cell.configureTeamStandings(index: indexPath.row, standings: standings, results: results, resultsPercentage: percentageStr)
+            }
+            else{
             let standings = viewModel.getPlayerRowByIndex(index: indexPath.row)
             let points = viewModel.getPlayerPointsByIndex(index: indexPath.row)
             cell.configurePlayerStandings(index: indexPath.row, standings: standings, points: points)
+            }
+            cell.callReloadCell = {
+                tableView.reloadRows(at: [indexPath], with: .none)
+            }
+            
+            
+            return cell
         }
-        cell.callReloadCell = {
-            tableView.reloadRows(at: [indexPath], with: .none)
-        }
-        
-        
-        return cell
+       
     }
     
     

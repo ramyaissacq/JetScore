@@ -7,15 +7,79 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "CE8DC002-2E21-4C91-AA8E-4157F3CAB03B"
+            uuid = "2BB2AFB4-369F-461A-BB42-0ABCF891EFC7"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Jet Score/Controllers+ViewModels/Home Flow/Search/SearchViewController.swift"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/AwardsViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "31"
-            endingLineNumber = "31"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
+            landmarkName = "getTeamStandings(leagueID:subLeagueID:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "7069B06F-B81A-403C-8607-FD1430B825A1"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/AwardsViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "41"
+            endingLineNumber = "41"
+            landmarkName = "getTeamStandings(leagueID:subLeagueID:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F03804C2-981F-4964-93CE-009602122B0F"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/AwardsViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "67"
+            endingLineNumber = "67"
+            landmarkName = "analyseResponseJson(json:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C8C32CC2-D6CA-4D5E-A316-0C57BC2E0836"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/AwardsViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
+            landmarkName = "analyseResponseJson(json:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EB6696BE-369D-4007-BCC4-AB6C250C8EFF"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/AwardsViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "69"
+            endingLineNumber = "69"
             landmarkName = "initialSettings()"
             landmarkType = "7">
          </BreakpointContent>
@@ -23,96 +87,176 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "41E8B056-FEEF-464F-ADD0-C695783E23AA"
+            uuid = "5B46718B-35FD-4684-8340-E6B4A6B6C8E5"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Jet Score/Controllers+ViewModels/Home Flow/Home/HomeViewModel.swift"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/AwardsViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "94"
-            endingLineNumber = "94"
-            landmarkName = "getMatchDetails(id:)"
+            startingLineNumber = "40"
+            endingLineNumber = "40"
+            landmarkName = "getTeamStandings(leagueID:subLeagueID:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "E5B42A40-2E6E-423E-A676-6495C64A3601"
+            uuid = "92CFB939-9342-4DCD-B7A9-9EB611C2E66C"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Jet Score/Controllers+ViewModels/Home Flow/Home/HomeViewModel.swift"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/extensions+AwardsViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "123"
-            endingLineNumber = "123"
-            landmarkName = "getBasketballMatchDetails(id:)"
+            startingLineNumber = "13"
+            endingLineNumber = "13"
+            landmarkName = "didFinishTeamStandingsFetch()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B972417F-D7DB-4C85-8703-A8F4325E372B"
+            uuid = "33F1822C-3736-4EBE-BF37-23F6293EBB95"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Jet Score/Controllers+ViewModels/Home Flow/Home/HomeViewModel.swift"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/extensions+AwardsViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "92"
-            endingLineNumber = "92"
-            landmarkName = "getMatchDetails(id:)"
+            startingLineNumber = "14"
+            endingLineNumber = "14"
+            landmarkName = "didFinishTeamStandingsFetch()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "69F2870A-47DB-4AFC-85F7-5D3A18892BBC"
+            uuid = "C5AA15B6-2321-4130-9B9C-9C1BC6A3D2F4"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Jet Score/Controllers+ViewModels/Home Flow/Home/HomeViewModel.swift"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/AwardsViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "122"
-            endingLineNumber = "122"
-            landmarkName = "getBasketballMatchDetails(id:)"
+            startingLineNumber = "115"
+            endingLineNumber = "115"
+            landmarkName = "setupViews()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A3352875-6D6C-448E-AC4C-C50F2CAB6CCB"
+            uuid = "E3BBFB08-DB8F-41B2-BD85-81CE94A3C900"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Jet Score/Controllers+ViewModels/Home Flow/Home/HomeViewModel.swift"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/AwardsViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "91"
-            endingLineNumber = "91"
-            landmarkName = "getMatchDetails(id:)"
+            startingLineNumber = "116"
+            endingLineNumber = "116"
+            landmarkName = "setupViews()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "786FA06C-4AF8-4F1A-9EE5-7E403164EFB8"
+            uuid = "2991FCE2-5390-4B51-AAF4-24EE11811F64"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Jet Score/Controllers+ViewModels/Home Flow/Home/HomeViewModel.swift"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/AwardsViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "121"
-            endingLineNumber = "121"
-            landmarkName = "getBasketballMatchDetails(id:)"
+            startingLineNumber = "142"
+            endingLineNumber = "142"
+            landmarkName = "emptyChecks()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E29F23EC-9937-4204-918C-32AB15AD17F9"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/AwardsViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
+            landmarkName = "emptyChecks()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "20D32FCD-0539-486F-A8E2-8A663FBF9315"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/AwardsViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "153"
+            endingLineNumber = "153"
+            landmarkName = "emptyChecks()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A13AFB03-1EAD-4775-8134-B539A7246E47"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/AwardsViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "144"
+            endingLineNumber = "144"
+            landmarkName = "emptyChecks()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "88586CEA-05AA-4866-B93F-5A77CE36D74E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/AwardsViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "166"
+            endingLineNumber = "166"
+            landmarkName = "emptyChecks()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "61CCDE88-5A9D-48D4-B7C4-CABEC9542F55"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Jet Score/Controllers+ViewModels/Standings Flow/Standings/AwardsViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "173"
+            endingLineNumber = "173"
+            landmarkName = "emptyChecks()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
